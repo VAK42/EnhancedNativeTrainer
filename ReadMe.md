@@ -1,1 +1,1 @@
-Based On: Script Hook V - Alexander Blade - https://www.dev-c.com/gtav/scripthookv
+Alexander Blade - Script Hook V - https://www.dev-c.com/gtav/scripthookv
