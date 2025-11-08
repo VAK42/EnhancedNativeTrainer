@@ -11,17 +11,15 @@ void drawRect(float a0, float a1, float a2, float a3, int a4, int a5, int a6, in
 void drawMenuLine(std::string caption, float lineWidth, float lineHeight, float lineTop, float lineLeft, float textLeft, bool active, bool title, bool rescaleText = true)
 {
 	int textCol[4] = {255, 255, 255, 255};
-	int rectCol[4] = {70, 95, 95, 255};
+	int rectCol[4] = {0, 0, 0, 205};
 	float textScale = 0.35;
 	int font = 0;
 	if (active)
 	{
-		textCol[0] = 0;
-		textCol[1] = 0;
-		textCol[2] = 0;
-		rectCol[0] = 218;
-		rectCol[1] = 242;
-		rectCol[2] = 216;
+		rectCol[0] = 0;
+		rectCol[1] = 0;
+		rectCol[2] = 0;
+		rectCol[3] = 255;
 		if (rescaleText)
 			textScale = 0.40;
 	}
@@ -30,6 +28,7 @@ void drawMenuLine(std::string caption, float lineWidth, float lineHeight, float 
 		rectCol[0] = 0;
 		rectCol[1] = 0;
 		rectCol[2] = 0;
+		rectCol[3] = 255;
 		if (rescaleText)
 			textScale = 0.50;
 		font = 1;
