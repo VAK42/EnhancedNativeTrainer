@@ -4,7 +4,46 @@
 #include <ctime>
 #pragma warning(disable : 4244 4305)
 
-extern LPCSTR pedModels[67][10] = {
+bool featurePlayerInvincible = false;
+bool featurePlayerInvincibleUpdated = false;
+bool featurePlayerNeverWanted = false;
+bool featurePlayerIgnored = false;
+bool featurePlayerIgnoredUpdated = false;
+bool featurePlayerUnlimitedAbility = false;
+bool featurePlayerNoNoise = false;
+bool featurePlayerNoNoiseUpdated = false;
+bool featurePlayerFastSwim = false;
+bool featurePlayerFastSwimUpdated = false;
+bool featurePlayerFastRun = false;
+bool featurePlayerFastRunUpdated = false;
+bool featurePlayerSuperJump = false;
+bool featureWeaponNoReload = false;
+bool featureWeaponFireAmmo = false;
+bool featureWeaponExplosiveAmmo = false;
+bool featureWeaponExplosiveMelee = false;
+bool featureWeaponVehRockets = false;
+bool featureVehInvincible = false;
+bool featureVehInvincibleUpdated = false;
+bool featureVehInvincibleWheels = false;
+bool featureVehInvincibleWheelsUpdated = false;
+bool featureVehSeatbelt = false;
+bool featureVehSeatbeltUpdated = false;
+bool featureVehSpeedBoost = false;
+bool featureVehWrapInSpawned = false;
+bool featureWorldMoonGravity = false;
+bool featureWorldRandomCops = true;
+bool featureWorldRandomTrains = true;
+bool featureWorldRandomBoats = true;
+bool featureWorldGarbageTrucks = true;
+bool featureTimePaused = false;
+bool featureTimePausedUpdated = false;
+bool featureTimeSynced = false;
+bool featureWeatherWind = false;
+bool featureWeatherPers = false;
+bool featureMiscLockRadio = false;
+bool featureMiscHideHud = false;
+DWORD featureWeaponVehShootLastTime = 0;
+LPCSTR pedModels[70][10] = {
 		{"player_zero", "player_one", "player_two", "a_c_boar", "a_c_chimp", "a_c_cow", "a_c_coyote", "a_c_deer", "a_c_fish", "a_c_hen"},
 		{"a_c_cat_01", "a_c_chickenhawk", "a_c_cormorant", "a_c_crow", "a_c_dolphin", "a_c_humpback", "a_c_killerwhale", "a_c_pigeon", "a_c_seagull", "a_c_sharkhammer"},
 		{"a_c_pig", "a_c_rat", "a_c_rhesus", "a_c_chop", "a_c_husky", "a_c_mtlion", "a_c_retriever", "a_c_sharktiger", "a_c_shepherd", "s_m_m_movalien_01"},
@@ -74,8 +113,8 @@ extern LPCSTR pedModels[67][10] = {
 		{"u_m_m_rivalpap", "u_m_m_spyactor", "u_m_m_willyfist", "u_m_o_finguru_01", "u_m_o_taphillbilly", "u_m_o_tramp_01", "u_m_y_abner", "u_m_y_antonb", "u_m_y_babyd", "u_m_y_baygor"},
 		{"u_m_y_burgerdrug_01", "u_m_y_chip", "u_m_y_cyclist_01", "u_m_y_fibmugger_01", "u_m_y_guido_01", "u_m_y_gunvend_01", "u_m_y_hippie_01", "u_m_y_imporage", "u_m_y_justin", "u_m_y_mani"},
 		{"u_m_y_militarybum", "u_m_y_paparazzi", "u_m_y_party_01", "u_m_y_pogo_01", "u_m_y_prisoner_01", "ig_benny", "ig_g", "ig_vagspeak", "mp_m_g_vagfun_01", "mp_m_boatstaff_01"},
-		{"mp_f_boatstaff_01", "", "", "", "", "", "", "", "", ""}};
-extern LPCSTR pedModelNames[67][10] = {
+		{"mp_f_boatstaff_01", "", "", "", "", "", "", "", "", ""} };
+LPCSTR pedModelNames[70][10] = {
 		{"Michael", "Franklin", "Trevor", "Boar", "Chimp", "Cow", "Coyote", "Deer", "Fish", "Hen"},
 		{"Cat", "Hawk", "Cormorant", "Crow", "Dolphin", "Humpback", "Whale", "Pigeon", "Seagull", "Sharkhammer"},
 		{"Pig", "Rat", "Rhesus", "Chop", "Husky", "Mtlion", "Retriever", "Sharktiger", "Shepherd", "Alien"},
@@ -145,8 +184,8 @@ extern LPCSTR pedModelNames[67][10] = {
 		{"Rivalpap", "Spyactor", "Willyfist", "Finguru", "Taphillbilly", "Tramp", "Abner", "Antonb", "Babyd", "Baygor"},
 		{"Burgerdrug", "Chip", "Cyclist", "Fibmugger", "Guido", "Gunvend", "Hippie", "Imporage", "Justin", "Mani"},
 		{"Militarybum", "Paparazzi", "Party", "Pogo", "Prisoner", "Benny", "G", "Vagspeak", "Vagfun", "Boatstaff"},
-		{"Femboatstaff", "", "", "", "", "", "", "", "", ""}};
-extern LPCSTR vehicleModels[40][10] = {
+		{"Femboatstaff", "", "", "", "", "", "", "", "", ""} };
+LPCSTR vehicleModels[40][10] = {
 		{"NINEF", "NINEF2", "BLISTA", "ASEA", "ASEA2", "BOATTRAILER", "BUS", "ARMYTANKER", "ARMYTRAILER", "ARMYTRAILER2"},
 		{"SUNTRAP", "COACH", "AIRBUS", "ASTEROPE", "AIRTUG", "AMBULANCE", "BARRACKS", "BARRACKS2", "BALLER", "BALLER2"},
 		{"BJXL", "BANSHEE", "BENSON", "BFINJECTION", "BIFF", "BLAZER", "BLAZER2", "BLAZER3", "BISON", "BISON2"},
@@ -186,7 +225,7 @@ extern LPCSTR vehicleModels[40][10] = {
 		{"BRAWLER", "BUCCANEER2", "CHINO2", "FACTION", "FACTION2", "MOONBEAM", "MOONBEAM2", "PRIMO2", "VOODOO", "LURCHER"},
 		{"BTYPE2", "BALLER3", "BALLER4", "BALLER5", "BALLER6", "CARGOBOB4", "COG55", "COG552", "COGNOSCENTI", "COGNOSCENTI2"},
 		{"DINGHY4", "LIMO2", "MAMBA", "NIGHTSHADE", "SCHAFTER3", "SCHAFTER4", "SCHAFTER5", "SCHAFTER6", "SEASHARK3", "SPEEDER2"},
-		{"SUPERVOLITO", "SUPERVOLITO2", "TORO2", "TROPIC2", "VALKYRIE2", "VERLIERER2", "TAMPA", "BANSHEE2", "SULTANRS", "BTYPE3"}};
+		{"SUPERVOLITO", "SUPERVOLITO2", "TORO2", "TROPIC2", "VALKYRIE2", "VERLIERER2", "TAMPA", "BANSHEE2", "SULTANRS", "BTYPE3"} };
 struct TeleportLine
 {
 	LPCSTR text;
@@ -194,7 +233,7 @@ struct TeleportLine
 	float y;
 	float z;
 };
-extern TeleportLine gTeleportLines[17] = {
+extern TeleportLine teleportLines[17] = {
 		{"Marker"},
 		{"Michael's House", -852.4f, 160.0f, 65.6f},
 		{"Franklin's House", 7.9f, 548.1f, 175.5f},
@@ -211,14 +250,14 @@ extern TeleportLine gTeleportLines[17] = {
 		{"Military Base", -2047.4f, 3132.1f, 32.8f},
 		{"Mckenzie Airfield", 2121.7f, 4796.3f, 41.1f},
 		{"Desert Airfield", 1747.0f, 3273.7f, 41.1f},
-		{"Chilliad", 425.4f, 5614.3f, 766.5f}};
+		{"Chilliad", 425.4f, 5614.3f, 766.5f} };
 struct PlayerLine
 {
 	LPCSTR text;
-	bool *pState;
-	bool *pUpdated;
+	bool* pState;
+	bool* pUpdated;
 };
-extern PlayerLine gPlayerLines[14] = {
+extern PlayerLine playerLines[14] = {
 		{"Skin Changer", NULL, NULL},
 		{"Teleport", NULL, NULL},
 		{"Fix Player", NULL, NULL},
@@ -232,21 +271,21 @@ extern PlayerLine gPlayerLines[14] = {
 		{"Noiseless", &featurePlayerNoNoise, &featurePlayerNoNoiseUpdated},
 		{"Fast Swim", &featurePlayerFastSwim, &featurePlayerFastSwimUpdated},
 		{"Fast Run", &featurePlayerFastRun, &featurePlayerFastRunUpdated},
-		{"Super Jump", &featurePlayerSuperJump, NULL}};
+		{"Super Jump", &featurePlayerSuperJump, NULL} };
 struct WeaponLine
 {
 	LPCSTR text;
-	bool *pState;
-	bool *pUpdated;
+	bool* pState;
+	bool* pUpdated;
 };
-extern WeaponLine gWeaponLines[6] = {
+extern WeaponLine weaponLines[6] = {
 		{"Get All Weapon", NULL, NULL},
 		{"No Reload", &featureWeaponNoReload, NULL},
 		{"Fire Ammo", &featureWeaponFireAmmo, NULL},
 		{"Explosive Ammo", &featureWeaponExplosiveAmmo, NULL},
 		{"Explosive Melee", &featureWeaponExplosiveMelee, NULL},
-		{"Vehicle Rockets", &featureWeaponVehRockets, NULL}};
-extern LPCSTR gWeaponNames[59] = {
+		{"Vehicle Rockets", &featureWeaponVehRockets, NULL} };
+LPCSTR weaponNames[60] = {
 		"WEAPON_KNIFE", "WEAPON_NIGHTSTICK", "WEAPON_HAMMER", "WEAPON_BAT", "WEAPON_GOLFCLUB", "WEAPON_CROWBAR",
 		"WEAPON_PISTOL", "WEAPON_COMBATPISTOL", "WEAPON_APPISTOL", "WEAPON_PISTOL50", "WEAPON_MICROSMG", "WEAPON_SMG",
 		"WEAPON_ASSAULTSMG", "WEAPON_ASSAULTRIFLE", "WEAPON_CARBINERIFLE", "WEAPON_ADVANCEDRIFLE", "WEAPON_MG",
@@ -259,14 +298,14 @@ extern LPCSTR gWeaponNames[59] = {
 		"WEAPON_MARKSMANRIFLE", "WEAPON_HEAVYSHOTGUN", "WEAPON_GUSENBERG", "WEAPON_HATCHET", "WEAPON_RAILGUN",
 		"WEAPON_COMBATPDW", "WEAPON_KNUCKLE", "WEAPON_MARKSMANPISTOL",
 		"WEAPON_FLASHLIGHT", "WEAPON_MACHETE", "WEAPON_MACHINEPISTOL",
-		"WEAPON_SWITCHBLADE", "WEAPON_REVOLVER"};
+		"WEAPON_SWITCHBLADE", "WEAPON_REVOLVER" };
 struct VehicleLine
 {
 	LPCSTR text;
-	bool *pState;
-	bool *pUpdated;
+	bool* pState;
+	bool* pUpdated;
 };
-extern VehicleLine gVehicleLines[8] = {
+extern VehicleLine vehicleLines[8] = {
 		{"Car Spawner", NULL, NULL},
 		{"Paint Random", NULL, NULL},
 		{"Fix", NULL, NULL},
@@ -274,39 +313,39 @@ extern VehicleLine gVehicleLines[8] = {
 		{"Wrap In Spawned", &featureVehWrapInSpawned, NULL},
 		{"Invincible", &featureVehInvincible, &featureVehInvincibleUpdated},
 		{"Strong Wheels", &featureVehInvincibleWheels, &featureVehInvincibleWheelsUpdated},
-		{"Speed Boost", &featureVehSpeedBoost, NULL}};
+		{"Speed Boost", &featureVehSpeedBoost, NULL} };
 struct WorldLine
 {
 	LPCSTR text;
-	bool *pState;
-	bool *pUpdated;
+	bool* pState;
+	bool* pUpdated;
 };
-extern WorldLine gWorldLines[5] = {
+extern WorldLine worldLines[5] = {
 		{"Moon Gravity", &featureWorldMoonGravity, NULL},
 		{"Random Cops", &featureWorldRandomCops, NULL},
 		{"Random Trains", &featureWorldRandomTrains, NULL},
 		{"Random Boats", &featureWorldRandomBoats, NULL},
-		{"Garbage Trucks", &featureWorldGarbageTrucks, NULL}};
+		{"Garbage Trucks", &featureWorldGarbageTrucks, NULL} };
 struct TimeLine
 {
 	LPCSTR text;
-	bool *pState;
-	bool *pUpdated;
+	bool* pState;
+	bool* pUpdated;
 };
-extern TimeLine gTimeLines[3] = {
+extern TimeLine timeLines[3] = {
 		{"Hour", NULL, NULL},
 		{"Clock Paused", &featureTimePaused, &featureTimePausedUpdated},
-		{"Sync With System", &featureTimeSynced, NULL}};
+		{"Sync With System", &featureTimeSynced, NULL} };
 struct WeatherLine
 {
 	LPCSTR text;
-	bool *pState;
-	bool *pUpdated;
+	bool* pState;
+	bool* pUpdated;
 };
-extern WeatherLine gWeatherLines[16] = {
+extern WeatherLine weatherLines[16] = {
 		{"Wind", &featureWeatherWind, NULL},
 		{"Set Persist", &featureWeatherPers, NULL},
-		{"Extrasunny", NULL, NULL},
+		{"Extra Sunny", NULL, NULL},
 		{"Clear", NULL, NULL},
 		{"Clouds", NULL, NULL},
 		{"Smog", NULL, NULL},
@@ -319,35 +358,40 @@ extern WeatherLine gWeatherLines[16] = {
 		{"Snow", NULL, NULL},
 		{"Blizzard", NULL, NULL},
 		{"Snowlight", NULL, NULL},
-		{"Xmas", NULL, NULL}};
+		{"Xmas", NULL, NULL} };
 struct MiscLine
 {
 	LPCSTR text;
-	bool *pState;
-	bool *pUpdated;
+	bool* pState;
+	bool* pUpdated;
 };
-extern MiscLine gMiscLines[2] = {
+extern MiscLine miscLines[2] = {
 		{"Next Radio Track", NULL, NULL},
-		{"Hide Hud", &featureMiscHideHud, NULL}};
-extern LPCSTR gMainLineCaption[7] = {"Player", "Weapon", "Vehicle", "World", "Time", "Weather", "Misc"};
-void drawRect(float a0, float a1, float a2, float a3, int a4, int a5, int a6, int a7)
+		{"Hide Hud", &featureMiscHideHud, NULL} };
+LPCSTR mainLineCaption[7] = { "Player", "Weapon", "Vehicle", "World", "Time", "Weather", "Misc" };
+static void drawRect(float a0, float a1, float a2, float a3, int a4, int a5, int a6, int a7)
 {
 	GRAPHICS::DRAW_RECT((a0 + (a2 * 0.5f)), (a1 + (a3 * 0.5f)), a2, a3, a4, a5, a6, a7);
 }
-void drawMenuLine(std::string caption, float lineWidth, float lineHeight, float lineTop, float lineLeft, float textLeft, bool active, bool title, bool rescaleText = true, bool *pState = NULL, std::string stepperValue = "")
+static void drawMenuLine(std::string caption, float lineWidth, float lineHeight, float lineTop, float lineLeft, float textLeft, bool active, bool title, bool rescaleText = true, bool* pState = NULL, std::string stepperValue = "")
 {
-	int textCol[4] = {255, 255, 255, 255};
-	int rectCol[4] = {0, 0, 0, 205};
+	int textCol[4] = { 255, 255, 255, 255 };
+	int rectCol[4] = { 0, 0, 0, 180 };
 	float textScale = 0.35;
 	int font = 0;
+	float textHeightPx = 10.0f;
 	if (active)
 	{
-		rectCol[0] = 0;
-		rectCol[1] = 0;
-		rectCol[2] = 0;
+		rectCol[0] = 255;
+		rectCol[1] = 255;
+		rectCol[2] = 255;
 		rectCol[3] = 255;
+		textCol[0] = 0;
+		textCol[1] = 0;
+		textCol[2] = 0;
 		if (rescaleText)
 			textScale = 0.40;
+		textHeightPx = 11.4f;
 	}
 	if (title)
 	{
@@ -355,18 +399,24 @@ void drawMenuLine(std::string caption, float lineWidth, float lineHeight, float 
 		rectCol[1] = 0;
 		rectCol[2] = 0;
 		rectCol[3] = 255;
+		textCol[0] = 255;
+		textCol[1] = 255;
+		textCol[2] = 255;
+		textCol[3] = 255;
+		lineHeight = 36.0f;
 		if (rescaleText)
 			textScale = 0.50;
 		font = 1;
+		textHeightPx = 14.3f;
 	}
 	int screenW, screenH;
 	GRAPHICS::GET_SCREEN_RESOLUTION(&screenW, &screenH);
 	textLeft += lineLeft;
 	float lineWidthScaled = lineWidth / (float)screenW;
-	float lineTopScaled = lineTop / (float)screenH;
-	float textLeftScaled = textLeft / (float)screenW;
-	float lineHeightScaled = lineHeight / (float)screenH;
 	float lineLeftScaled = lineLeft / (float)screenW;
+	float lineHeightScaled = lineHeight / (float)screenH;
+	float lineTopScaled = lineTop / (float)screenH;
+	drawRect(lineLeftScaled, lineTopScaled, lineWidthScaled, lineHeightScaled, rectCol[0], rectCol[1], rectCol[2], rectCol[3]);
 	UI::SET_TEXT_FONT(font);
 	UI::SET_TEXT_SCALE(0.0, textScale);
 	UI::SET_TEXT_COLOUR(textCol[0], textCol[1], textCol[2], textCol[3]);
@@ -375,7 +425,11 @@ void drawMenuLine(std::string caption, float lineWidth, float lineHeight, float 
 	UI::SET_TEXT_EDGE(0, 0, 0, 0, 0);
 	UI::_SET_TEXT_ENTRY("STRING");
 	UI::_ADD_TEXT_COMPONENT_STRING((LPSTR)caption.c_str());
-	UI::_DRAW_TEXT(textLeftScaled, (((lineTopScaled + 0.00278f) + lineHeightScaled) - 0.005f));
+	float textHeightScaled = textHeightPx / (float)screenH;
+	float textTopScaled = lineTopScaled + (lineHeightScaled * 0.5f) - (textHeightScaled * 0.5f);
+	textTopScaled -= (6.0f / (float)screenH);
+	float textLeftScaled = textLeft / (float)screenW;
+	UI::_DRAW_TEXT(textLeftScaled, textTopScaled);
 	float rightTextLeft = (lineLeftScaled + lineWidthScaled) - (5.0f / (float)screenW);
 	if (pState != NULL)
 	{
@@ -384,8 +438,15 @@ void drawMenuLine(std::string caption, float lineWidth, float lineHeight, float 
 		float boxSizeScaledW = boxSize / (float)screenW;
 		float boxSizeScaledH = boxSize / (float)screenH;
 		float boxLeft = (lineLeftScaled + lineWidthScaled) - (boxPadding / (float)screenW) - boxSizeScaledW;
-		float boxTop = lineTopScaled + (lineHeightScaled * 0.25f);
-		drawRect(boxLeft, boxTop, boxSizeScaledW, boxSizeScaledH, 255, 255, 255, 255);
+		float boxTop = lineTopScaled + (lineHeightScaled * 0.5f) - (boxSizeScaledH * 0.5f);
+		int checkboxBGCol[4] = { 255, 255, 255, 255 };
+		if (active) {
+			checkboxBGCol[0] = 0;
+			checkboxBGCol[1] = 0;
+			checkboxBGCol[2] = 0;
+			checkboxBGCol[3] = 255;
+		}
+		drawRect(boxLeft, boxTop, boxSizeScaledW, boxSizeScaledH, checkboxBGCol[0], checkboxBGCol[1], checkboxBGCol[2], checkboxBGCol[3]);
 		if (*pState)
 		{
 			float innerBoxSize = boxSize * 0.6f;
@@ -394,7 +455,15 @@ void drawMenuLine(std::string caption, float lineWidth, float lineHeight, float 
 			float innerBoxSizeScaledH = innerBoxSize / (float)screenH;
 			float innerBoxLeft = boxLeft + (innerBoxPadding / (float)screenW);
 			float innerBoxTop = boxTop + (innerBoxPadding / (float)screenH);
-			drawRect(innerBoxLeft, innerBoxTop, innerBoxSizeScaledW, innerBoxSizeScaledH, 255, 255, 255, 255);
+			int innerBoxCol[4] = { 255, 255, 255, 255 };
+			if (!active)
+			{
+				innerBoxCol[0] = 0;
+				innerBoxCol[1] = 0;
+				innerBoxCol[2] = 0;
+				innerBoxCol[3] = 255;
+			}
+			drawRect(innerBoxLeft, innerBoxTop, innerBoxSizeScaledW, innerBoxSizeScaledH, innerBoxCol[0], innerBoxCol[1], innerBoxCol[2], innerBoxCol[3]);
 		}
 	}
 	else if (!stepperValue.empty())
@@ -408,24 +477,14 @@ void drawMenuLine(std::string caption, float lineWidth, float lineHeight, float 
 		UI::SET_TEXT_EDGE(0, 0, 0, 0, 0);
 		UI::_SET_TEXT_ENTRY("STRING");
 		UI::_ADD_TEXT_COMPONENT_STRING((LPSTR)stepperValue.c_str());
-		UI::_DRAW_TEXT(rightTextLeft, (((lineTopScaled + 0.00278f) + lineHeightScaled) - 0.005f));
+		UI::_DRAW_TEXT(rightTextLeft, textTopScaled);
 	}
-	UI::SET_TEXT_FONT(font);
-	UI::SET_TEXT_SCALE(0.0, textScale);
-	UI::SET_TEXT_COLOUR(textCol[0], textCol[1], textCol[2], textCol[3]);
-	UI::SET_TEXT_CENTRE(0);
-	UI::SET_TEXT_DROPSHADOW(0, 0, 0, 0, 0);
-	UI::SET_TEXT_EDGE(0, 0, 0, 0, 0);
-	UI::_SET_TEXT_GXT_ENTRY("STRING");
-	UI::_ADD_TEXT_COMPONENT_STRING((LPSTR)caption.c_str());
-	int lineCount = UI::_0x9040DFB09BE75706(textLeftScaled, (((lineTopScaled + 0.00278f) + lineHeightScaled) - 0.005f));
-	drawRect(lineLeftScaled, lineTopScaled + (0.00278f), lineWidthScaled, ((((float)(lineCount)*UI::_0xDB88A37483346780(textScale, 0)) + (lineHeightScaled * 2.0f)) + 0.005f), rectCol[0], rectCol[1], rectCol[2], rectCol[3]);
 }
-bool isTrainerSwitchPressed()
+static bool isTrainerSwitchPressed()
 {
 	return IsKeyJustUp(VK_F4);
 }
-void getButtonState(bool *a, bool *b, bool *up, bool *down, bool *l, bool *r)
+static void getButtonState(bool* a, bool* b, bool* up, bool* down, bool* l, bool* r)
 {
 	if (a)
 		*a = IsKeyDown(VK_RETURN) || IsKeyDown(VK_NUMPAD5);
@@ -440,48 +499,32 @@ void getButtonState(bool *a, bool *b, bool *up, bool *down, bool *l, bool *r)
 	if (l)
 		*l = IsKeyDown(VK_LEFT) || IsKeyDown(VK_NUMPAD4);
 }
-void menuBeep()
+static void menuBeep()
 {
 	AUDIO::PLAY_SOUND_FRONTEND(-1, "NAV_UP_DOWN", "HUD_FRONTEND_DEFAULT_SOUNDSET", 0);
 }
-std::string gStatusText;
-DWORD gStatusTextDrawTicksMax;
-bool gStatusTextGxtEntry;
-const int gMaxItemsOnScreen = 10;
-const float gMenuWidth = 250.0f;
-const float gMenuLineHeight = 36.0f;
-const float gMenuTop = 60.0f;
-float gMenuFooterTop = gMenuTop + (gMaxItemsOnScreen * gMenuLineHeight) + 2.78f;
-float gMenuFooterHeight = 25.0f;
-void drawMenuFooter(int numPages = 0, int currentPage = 0)
+std::string statusText;
+DWORD statusTextDrawTicksMax;
+bool statusTextGxtEntry;
+const int maxItemsOnScreen = 10;
+const float menuWidth = 250.0f;
+const float menuLineHeight = 36.0f;
+const float menuTop = 54.0f;
+float menuFooterHeight = 25.0f;
+static void drawMenuFooter(int itemsOnThisPage, int numPages = 0, int currentPage = 0)
 {
 	int screenW, screenH;
 	GRAPHICS::GET_SCREEN_RESOLUTION(&screenW, &screenH);
 	float footerLeft = 0.0f;
-	float lineWidthScaled = gMenuWidth / (float)screenW;
+	float lineWidthScaled = menuWidth / (float)screenW;
 	float footerLeftScaled = footerLeft / (float)screenW;
-	float footerTopScaled = gMenuFooterTop / (float)screenH;
-	float footerHeightScaled = gMenuFooterHeight / (float)screenH;
-	if (numPages > 1)
-	{
-		std::string pageText = "Page " + std::to_string(currentPage + 1) + " / " + std::to_string(numPages);
-		float textRightScaled = (footerLeft + gMenuWidth - 5.0f) / (float)screenW;
-		float textTopScaled = footerTopScaled + (footerHeightScaled * 0.5f) - (10.0f / (float)screenH * 0.5f);
-		UI::SET_TEXT_FONT(0);
-		UI::SET_TEXT_SCALE(0.0, 0.35);
-		UI::SET_TEXT_COLOUR(255, 255, 255, 255);
-		UI::SET_TEXT_RIGHT_JUSTIFY(TRUE);
-		UI::SET_TEXT_WRAP(0.0f, textRightScaled);
-		UI::SET_TEXT_DROPSHADOW(0, 0, 0, 0, 0);
-		UI::SET_TEXT_EDGE(0, 0, 0, 0, 0);
-		UI::_SET_TEXT_ENTRY("STRING");
-		UI::_ADD_TEXT_COMPONENT_STRING((char *)pageText.c_str());
-		UI::_DRAW_TEXT(textRightScaled, textTopScaled);
-	}
-	if (GetTickCount() < gStatusTextDrawTicksMax)
+	float menuFooterTop = menuTop + (itemsOnThisPage * menuLineHeight) + 2.78f;
+	float footerTopScaled = menuFooterTop / (float)screenH;
+	float footerHeightScaled = menuFooterHeight / (float)screenH;
+	if (GetTickCount64() < statusTextDrawTicksMax)
 	{
 		DWORD fadeDuration = 1000;
-		DWORD timeLeft = gStatusTextDrawTicksMax - GetTickCount();
+		DWORD timeLeft = statusTextDrawTicksMax - GetTickCount64();
 		int alpha = 205;
 		int textAlpha = 255;
 		if (timeLeft < fadeDuration)
@@ -491,7 +534,7 @@ void drawMenuFooter(int numPages = 0, int currentPage = 0)
 			textAlpha = (int)(255.0f * fadePercent);
 		}
 		float textLeftScaled = (footerLeft + 5.0f) / (float)screenW;
-		float textTopScaled = footerTopScaled + (footerHeightScaled * 0.5f) - (10.0f / (float)screenH * 0.5f);
+		float textTopScaled = footerTopScaled + (footerHeightScaled * 0.5f) - (22.0f / (float)screenH * 0.5f);
 		drawRect(footerLeftScaled, footerTopScaled, lineWidthScaled, footerHeightScaled, 0, 0, 0, alpha);
 		UI::SET_TEXT_FONT(0);
 		UI::SET_TEXT_SCALE(0.0, 0.35);
@@ -499,64 +542,26 @@ void drawMenuFooter(int numPages = 0, int currentPage = 0)
 		UI::SET_TEXT_CENTRE(0);
 		UI::SET_TEXT_DROPSHADOW(0, 0, 0, 0, 0);
 		UI::SET_TEXT_EDGE(0, 0, 0, 0, 0);
-		if (gStatusTextGxtEntry)
+		if (statusTextGxtEntry)
 		{
-			UI::_SET_TEXT_ENTRY((char *)gStatusText.c_str());
+			UI::_SET_TEXT_ENTRY((char*)statusText.c_str());
 		}
 		else
 		{
 			UI::_SET_TEXT_ENTRY("STRING");
-			UI::_ADD_TEXT_COMPONENT_STRING((char *)gStatusText.c_str());
+			UI::_ADD_TEXT_COMPONENT_STRING((char*)statusText.c_str());
 		}
 		UI::_DRAW_TEXT(textLeftScaled, textTopScaled);
 	}
 }
-void setStatusText(std::string str, DWORD time = 5000, bool isGxtEntry = false)
+static void setStatusText(std::string str, DWORD time = 5000, bool isGxtEntry = false)
 {
-	gStatusText = str;
-	gStatusTextDrawTicksMax = GetTickCount() + time;
-	gStatusTextGxtEntry = isGxtEntry;
+	statusText = str;
+	statusTextDrawTicksMax = GetTickCount64() + time;
+	statusTextGxtEntry = isGxtEntry;
 }
-bool gFeaturePlayerInvincible = false;
-bool gFeaturePlayerInvincibleUpdated = false;
-bool gFeaturePlayerNeverWanted = false;
-bool gFeaturePlayerIgnored = false;
-bool gFeaturePlayerIgnoredUpdated = false;
-bool gFeaturePlayerUnlimitedAbility = false;
-bool gFeaturePlayerNoNoise = false;
-bool gFeaturePlayerNoNoiseUpdated = false;
-bool gFeaturePlayerFastSwim = false;
-bool gFeaturePlayerFastSwimUpdated = false;
-bool gFeaturePlayerFastRun = false;
-bool gFeaturePlayerFastRunUpdated = false;
-bool gFeaturePlayerSuperJump = false;
-bool gFeatureWeaponNoReload = false;
-bool gFeatureWeaponFireAmmo = false;
-bool gFeatureWeaponExplosiveAmmo = false;
-bool gFeatureWeaponExplosiveMelee = false;
-bool gFeatureWeaponVehRockets = false;
-DWORD gFeatureWeaponVehShootLastTime = 0;
-bool gFeatureVehInvincible = false;
-bool gFeatureVehInvincibleUpdated = false;
-bool gFeatureVehInvincibleWheels = false;
-bool gFeatureVehInvincibleWheelsUpdated = false;
-bool gFeatureVehSeatbelt = false;
-bool gFeatureVehSeatbeltUpdated = false;
-bool gFeatureVehSpeedBoost = false;
-bool gFeatureVehWrapInSpawned = false;
-bool gFeatureWorldMoonGravity = false;
-bool gFeatureWorldRandomCops = true;
-bool gFeatureWorldRandomTrains = true;
-bool gFeatureWorldRandomBoats = true;
-bool gFeatureWorldGarbageTrucks = true;
-bool gFeatureTimePaused = false;
-bool gFeatureTimePausedUpdated = false;
-bool gFeatureTimeSynced = false;
-bool gFeatureWeatherWind = false;
-bool gFeatureWeatherPers = false;
-bool gFeatureMiscLockRadio = false;
-bool gFeatureMiscHideHud = false;
-void checkPlayerModel()
+
+static void checkPlayerModel()
 {
 	Player player = PLAYER::PLAYER_ID();
 	Ped playerPed = PLAYER::PLAYER_PED_ID();
@@ -565,8 +570,8 @@ void checkPlayerModel()
 	Hash model = ENTITY::GET_ENTITY_MODEL(playerPed);
 	if (ENTITY::IS_ENTITY_DEAD(playerPed) || PLAYER::IS_PLAYER_BEING_ARRESTED(player, TRUE))
 		if (model != GAMEPLAY::GET_HASH_KEY("player_zero") &&
-				model != GAMEPLAY::GET_HASH_KEY("player_one") &&
-				model != GAMEPLAY::GET_HASH_KEY("player_two"))
+			model != GAMEPLAY::GET_HASH_KEY("player_one") &&
+			model != GAMEPLAY::GET_HASH_KEY("player_two"))
 		{
 			setStatusText("Turning To Normal!");
 			WAIT(1000);
@@ -581,15 +586,15 @@ void checkPlayerModel()
 				WAIT(0);
 		}
 }
-void updateVehicleGuns()
+static void updateVehicleGuns()
 {
 	Player player = PLAYER::PLAYER_ID();
 	Ped playerPed = PLAYER::PLAYER_PED_ID();
-	if (!ENTITY::DOES_ENTITY_EXIST(playerPed) || !gFeatureWeaponVehRockets)
+	if (!ENTITY::DOES_ENTITY_EXIST(playerPed) || !featureWeaponVehRockets)
 		return;
 	bool bSelect = IsKeyDown(0x6B);
-	if (bSelect && gFeatureWeaponVehShootLastTime + 150 < GetTickCount() &&
-			PLAYER::IS_PLAYER_CONTROL_ON(player) && PED::IS_PED_IN_ANY_VEHICLE(playerPed, 0))
+	if (bSelect && featureWeaponVehShootLastTime + 150 < GetTickCount64() &&
+		PLAYER::IS_PLAYER_CONTROL_ON(player) && PED::IS_PED_IN_ANY_VEHICLE(playerPed, 0))
 	{
 		Vehicle veh = PED::GET_VEHICLE_PED_IS_USING(playerPed);
 		Vector3 v0, v1;
@@ -607,96 +612,96 @@ void updateVehicleGuns()
 		Vector3 coords1to = ENTITY::GET_OFFSET_FROM_ENTITY_IN_WORLD_COORDS(veh, v1.x, v1.y + 100.0f, 0.1f);
 		GAMEPLAY::SHOOT_SINGLE_BULLET_BETWEEN_COORDS(coords0from.x, coords0from.y, coords0from.z, coords0to.x, coords0to.y, coords0to.z, 250, 1, weaponAssetRocket, playerPed, 1, 0, -1.0);
 		GAMEPLAY::SHOOT_SINGLE_BULLET_BETWEEN_COORDS(coords1from.x, coords1from.y, coords1from.z, coords1to.x, coords1to.y, coords1to.z, 250, 1, weaponAssetRocket, playerPed, 1, 0, -1.0);
-		gFeatureWeaponVehShootLastTime = GetTickCount();
+		featureWeaponVehShootLastTime = GetTickCount64();
 	}
 }
-bool gSkinchangerUsed = false;
-void updateFeatures()
+bool skinchangerUsed = false;
+static void updateFeatures()
 {
 	updateVehicleGuns();
-	if (gSkinchangerUsed)
+	if (skinchangerUsed)
 		checkPlayerModel();
 	if (ENTITY::IS_ENTITY_DEAD(PLAYER::PLAYER_PED_ID()) || PLAYER::IS_PLAYER_BEING_ARRESTED(PLAYER::PLAYER_ID(), TRUE))
 	{
 		WAIT(0);
 		return;
 	}
-	gFeatureWorldRandomCops = PED::CAN_CREATE_RANDOM_COPS() == TRUE;
+	featureWorldRandomCops = PED::CAN_CREATE_RANDOM_COPS() == TRUE;
 	Player player = PLAYER::PLAYER_ID();
 	Ped playerPed = PLAYER::PLAYER_PED_ID();
 	BOOL bPlayerExists = ENTITY::DOES_ENTITY_EXIST(playerPed);
-	if (gFeaturePlayerInvincibleUpdated)
+	if (featurePlayerInvincibleUpdated)
 	{
-		if (bPlayerExists && !gFeaturePlayerInvincible)
+		if (bPlayerExists && !featurePlayerInvincible)
 			PLAYER::SET_PLAYER_INVINCIBLE(player, FALSE);
-		gFeaturePlayerInvincibleUpdated = false;
+		featurePlayerInvincibleUpdated = false;
 	}
-	if (gFeaturePlayerInvincible)
+	if (featurePlayerInvincible)
 	{
 		if (bPlayerExists)
 			PLAYER::SET_PLAYER_INVINCIBLE(player, TRUE);
 	}
-	if (gFeaturePlayerNeverWanted)
+	if (featurePlayerNeverWanted)
 	{
 		if (bPlayerExists)
 			PLAYER::CLEAR_PLAYER_WANTED_LEVEL(player);
 	}
-	if (gFeaturePlayerIgnoredUpdated)
+	if (featurePlayerIgnoredUpdated)
 	{
 		if (bPlayerExists)
-			PLAYER::SET_POLICE_IGNORE_PLAYER(player, gFeaturePlayerIgnored);
-		gFeaturePlayerIgnoredUpdated = false;
+			PLAYER::SET_POLICE_IGNORE_PLAYER(player, featurePlayerIgnored);
+		featurePlayerIgnoredUpdated = false;
 	}
-	if (gFeaturePlayerUnlimitedAbility)
+	if (featurePlayerUnlimitedAbility)
 	{
 		if (bPlayerExists)
 			PLAYER::SPECIAL_ABILITY_FILL_METER(player, 1);
 	}
-	if (gFeaturePlayerNoNoiseUpdated)
+	if (featurePlayerNoNoiseUpdated)
 	{
-		if (bPlayerExists && !gFeaturePlayerNoNoise)
+		if (bPlayerExists && !featurePlayerNoNoise)
 			PLAYER::SET_PLAYER_NOISE_MULTIPLIER(player, 1.0);
-		gFeaturePlayerNoNoiseUpdated = false;
+		featurePlayerNoNoiseUpdated = false;
 	}
-	if (gFeaturePlayerNoNoise)
+	if (featurePlayerNoNoise)
 		PLAYER::SET_PLAYER_NOISE_MULTIPLIER(player, 0.0);
-	if (gFeaturePlayerFastSwimUpdated)
+	if (featurePlayerFastSwimUpdated)
 	{
-		if (bPlayerExists && !gFeaturePlayerFastSwim)
+		if (bPlayerExists && !featurePlayerFastSwim)
 			PLAYER::SET_SWIM_MULTIPLIER_FOR_PLAYER(player, 1.0);
-		gFeaturePlayerFastSwimUpdated = false;
+		featurePlayerFastSwimUpdated = false;
 	}
-	if (gFeaturePlayerFastSwim)
+	if (featurePlayerFastSwim)
 		PLAYER::SET_SWIM_MULTIPLIER_FOR_PLAYER(player, 1.49);
-	if (gFeaturePlayerFastRunUpdated)
+	if (featurePlayerFastRunUpdated)
 	{
-		if (bPlayerExists && !gFeaturePlayerFastRun)
+		if (bPlayerExists && !featurePlayerFastRun)
 			PLAYER::SET_RUN_SPRINT_MULTIPLIER_FOR_PLAYER(player, 1.0);
-		gFeaturePlayerFastRunUpdated = false;
+		featurePlayerFastRunUpdated = false;
 	}
-	if (gFeaturePlayerFastRun)
+	if (featurePlayerFastRun)
 		PLAYER::SET_RUN_SPRINT_MULTIPLIER_FOR_PLAYER(player, 1.49);
-	if (gFeaturePlayerSuperJump)
+	if (featurePlayerSuperJump)
 	{
 		if (bPlayerExists)
 			GAMEPLAY::SET_SUPER_JUMP_THIS_FRAME(player);
 	}
-	if (gFeatureWeaponFireAmmo)
+	if (featureWeaponFireAmmo)
 	{
 		if (bPlayerExists)
 			GAMEPLAY::SET_FIRE_AMMO_THIS_FRAME(player);
 	}
-	if (gFeatureWeaponExplosiveAmmo)
+	if (featureWeaponExplosiveAmmo)
 	{
 		if (bPlayerExists)
 			GAMEPLAY::SET_EXPLOSIVE_AMMO_THIS_FRAME(player);
 	}
-	if (gFeatureWeaponExplosiveMelee)
+	if (featureWeaponExplosiveMelee)
 	{
 		if (bPlayerExists)
 			GAMEPLAY::SET_EXPLOSIVE_MELEE_THIS_FRAME(player);
 	}
-	if (bPlayerExists && gFeatureWeaponNoReload)
+	if (bPlayerExists && featureWeaponNoReload)
 	{
 		Hash cur;
 		if (WEAPON::GET_CURRENT_PED_WEAPON(playerPed, &cur, 1))
@@ -714,9 +719,9 @@ void updateFeatures()
 			}
 		}
 	}
-	if (gFeatureVehInvincibleUpdated)
+	if (featureVehInvincibleUpdated)
 	{
-		if (bPlayerExists && !gFeatureVehInvincible && PED::IS_PED_IN_ANY_VEHICLE(playerPed, 0))
+		if (bPlayerExists && !featureVehInvincible && PED::IS_PED_IN_ANY_VEHICLE(playerPed, 0))
 		{
 			Vehicle veh = PED::GET_VEHICLE_PED_IS_USING(playerPed);
 			ENTITY::SET_ENTITY_INVINCIBLE(veh, FALSE);
@@ -725,9 +730,9 @@ void updateFeatures()
 			VEHICLE::SET_VEHICLE_WHEELS_CAN_BREAK(veh, 1);
 			VEHICLE::SET_VEHICLE_CAN_BE_VISIBLY_DAMAGED(veh, 1);
 		}
-		gFeatureVehInvincibleUpdated = false;
+		featureVehInvincibleUpdated = false;
 	}
-	if (gFeatureVehInvincible)
+	if (featureVehInvincible)
 	{
 		if (bPlayerExists && PED::IS_PED_IN_ANY_VEHICLE(playerPed, 0))
 		{
@@ -739,18 +744,18 @@ void updateFeatures()
 			VEHICLE::SET_VEHICLE_CAN_BE_VISIBLY_DAMAGED(veh, 0);
 		}
 	}
-	if (gFeatureVehInvincibleWheelsUpdated)
+	if (featureVehInvincibleWheelsUpdated)
 	{
-		if (bPlayerExists && !gFeatureVehInvincibleWheels && PED::IS_PED_IN_ANY_VEHICLE(playerPed, 0))
+		if (bPlayerExists && !featureVehInvincibleWheels && PED::IS_PED_IN_ANY_VEHICLE(playerPed, 0))
 		{
 			Vehicle veh = PED::GET_VEHICLE_PED_IS_USING(playerPed);
 			VEHICLE::SET_VEHICLE_TYRES_CAN_BURST(veh, TRUE);
 			VEHICLE::SET_VEHICLE_WHEELS_CAN_BREAK(veh, TRUE);
 			VEHICLE::SET_VEHICLE_HAS_STRONG_AXLES(veh, FALSE);
 		}
-		gFeatureVehInvincibleWheelsUpdated = false;
+		featureVehInvincibleWheelsUpdated = false;
 	}
-	if (gFeatureVehInvincibleWheels)
+	if (featureVehInvincibleWheels)
 	{
 		if (bPlayerExists && PED::IS_PED_IN_ANY_VEHICLE(playerPed, 0))
 		{
@@ -761,13 +766,13 @@ void updateFeatures()
 		}
 	}
 	const int PED_FLAG_CAN_FLY_THRU_WINDSCREEN = 32;
-	if (gFeatureVehSeatbeltUpdated)
+	if (featureVehSeatbeltUpdated)
 	{
-		if (bPlayerExists && !gFeatureVehSeatbelt)
+		if (bPlayerExists && !featureVehSeatbelt)
 			PED::SET_PED_CONFIG_FLAG(playerPed, PED_FLAG_CAN_FLY_THRU_WINDSCREEN, TRUE);
-		gFeatureVehSeatbeltUpdated = false;
+		featureVehSeatbeltUpdated = false;
 	}
-	if (gFeatureVehSeatbelt)
+	if (featureVehSeatbelt)
 	{
 		if (bPlayerExists)
 		{
@@ -775,7 +780,7 @@ void updateFeatures()
 				PED::SET_PED_CONFIG_FLAG(playerPed, PED_FLAG_CAN_FLY_THRU_WINDSCREEN, FALSE);
 		}
 	}
-	if (gFeatureVehSpeedBoost && bPlayerExists && PED::IS_PED_IN_ANY_VEHICLE(playerPed, 0))
+	if (featureVehSpeedBoost && bPlayerExists && PED::IS_PED_IN_ANY_VEHICLE(playerPed, 0))
 	{
 		Vehicle veh = PED::GET_VEHICLE_PED_IS_USING(playerPed);
 		DWORD model = ENTITY::GET_ENTITY_MODEL(veh);
@@ -795,59 +800,59 @@ void updateFeatures()
 				VEHICLE::SET_VEHICLE_FORWARD_SPEED(veh, 0.0);
 		}
 	}
-	if (gFeatureTimePausedUpdated)
+	if (featureTimePausedUpdated)
 	{
-		TIME::PAUSE_CLOCK(gFeatureTimePaused);
-		gFeatureTimePausedUpdated = false;
+		TIME::PAUSE_CLOCK(featureTimePaused);
+		featureTimePausedUpdated = false;
 	}
-	if (gFeatureTimeSynced)
+	if (featureTimeSynced)
 	{
 		time_t now = time(0);
 		tm t;
 		localtime_s(&t, &now);
 		TIME::SET_CLOCK_TIME(t.tm_hour, t.tm_min, t.tm_sec);
 	}
-	if (gFeatureMiscHideHud)
+	if (featureMiscHideHud)
 		UI::HIDE_HUD_AND_RADAR_THIS_FRAME();
 }
-int gSkinchangerCurrentPage = 0;
-int gSkinchangerActiveItem = 0;
-bool processSkinchangerMenu()
+int skinchangerCurrentPage = 0;
+int skinchangerActiveItem = 0;
+static bool processSkinchangerMenu()
 {
 	DWORD waitTime = 150;
 	const int itemsPerPage = 10;
 	const int numPages = 67;
-	gSkinchangerActiveItem = 0;
+	skinchangerActiveItem = 0;
 	while (true)
 	{
 		int itemsOnThisPage = 0;
 		for (int i = 0; i < itemsPerPage; i++)
 		{
-			if (strlen(gPedModelNames[gSkinchangerCurrentPage][i]) > 0)
+			if (strlen(pedModelNames[skinchangerCurrentPage][i]) > 0)
 				itemsOnThisPage++;
 		}
-		DWORD maxTickCount = GetTickCount() + waitTime;
+		DWORD maxTickCount = GetTickCount64() + waitTime;
 		do
 		{
 			char caption[32];
-			sprintf_s(caption, "Skin Changer %d / %d", gSkinchangerCurrentPage + 1, numPages);
-			drawMenuLine(caption, gMenuWidth, 15.0, 18.0, 0.0, 5.0, false, true);
+			sprintf_s(caption, "Skin Changer %d / %d", skinchangerCurrentPage + 1, numPages);
+			drawMenuLine(caption, menuWidth, 36.0, 18.0, 0.0, 5.0, false, true);
 			for (int i = 0; i < itemsOnThisPage; i++)
 			{
-				LPCSTR modelName = gPedModelNames[gSkinchangerCurrentPage][i];
-				drawMenuLine(modelName, gMenuWidth, 9.0, 60.0 + i * gMenuLineHeight, 0.0, 9.0, i == gSkinchangerActiveItem, false, false);
+				LPCSTR modelName = pedModelNames[skinchangerCurrentPage][i];
+				drawMenuLine(modelName, menuWidth, menuLineHeight, menuTop + i * menuLineHeight, 0.0, 9.0, i == skinchangerActiveItem, false, false);
 			}
-			drawMenuFooter(numPages, gSkinchangerCurrentPage);
+			drawMenuFooter(itemsOnThisPage, numPages, skinchangerCurrentPage);
 			updateFeatures();
 			WAIT(0);
-		} while (GetTickCount() < maxTickCount);
+		} while (GetTickCount64() < maxTickCount);
 		waitTime = 0;
 		bool bSelect, bBack, bUp, bDown, bLeft, bRight;
 		getButtonState(&bSelect, &bBack, &bUp, &bDown, &bLeft, &bRight);
 		if (bSelect)
 		{
 			menuBeep();
-			DWORD model = GAMEPLAY::GET_HASH_KEY((char *)gPedModels[gSkinchangerCurrentPage][gSkinchangerActiveItem]);
+			DWORD model = GAMEPLAY::GET_HASH_KEY((char*)pedModels[skinchangerCurrentPage][skinchangerActiveItem]);
 			if (STREAMING::IS_MODEL_IN_CDIMAGE(model) && STREAMING::IS_MODEL_VALID(model))
 			{
 				STREAMING::REQUEST_MODEL(model);
@@ -867,7 +872,7 @@ bool processSkinchangerMenu()
 							break;
 						}
 					}
-				gSkinchangerUsed = true;
+				skinchangerUsed = true;
 				WAIT(100);
 				STREAMING::SET_MODEL_AS_NO_LONGER_NEEDED(model);
 				waitTime = 200;
@@ -881,76 +886,76 @@ bool processSkinchangerMenu()
 		else if (bRight)
 		{
 			menuBeep();
-			gSkinchangerCurrentPage++;
-			if (gSkinchangerCurrentPage >= numPages)
-				gSkinchangerCurrentPage = 0;
-			gSkinchangerActiveItem = 0;
+			skinchangerCurrentPage++;
+			if (skinchangerCurrentPage >= numPages)
+				skinchangerCurrentPage = 0;
+			skinchangerActiveItem = 0;
 			waitTime = 150;
 		}
 		else if (bLeft)
 		{
 			menuBeep();
-			if (gSkinchangerCurrentPage == 0)
-				gSkinchangerCurrentPage = numPages;
-			gSkinchangerCurrentPage--;
-			gSkinchangerActiveItem = 0;
+			if (skinchangerCurrentPage == 0)
+				skinchangerCurrentPage = numPages;
+			skinchangerCurrentPage--;
+			skinchangerActiveItem = 0;
 			waitTime = 150;
 		}
 		else if (bUp)
 		{
 			menuBeep();
-			if (gSkinchangerActiveItem == 0)
-				gSkinchangerActiveItem = itemsOnThisPage;
-			gSkinchangerActiveItem--;
+			if (skinchangerActiveItem == 0)
+				skinchangerActiveItem = itemsOnThisPage;
+			skinchangerActiveItem--;
 			waitTime = 150;
 		}
 		else if (bDown)
 		{
 			menuBeep();
-			gSkinchangerActiveItem++;
-			if (gSkinchangerActiveItem >= itemsOnThisPage)
-				gSkinchangerActiveItem = 0;
+			skinchangerActiveItem++;
+			if (skinchangerActiveItem >= itemsOnThisPage)
+				skinchangerActiveItem = 0;
 			waitTime = 150;
 		}
 	}
 	return false;
 }
-const int gTeleportLineCount = 17;
-int gTeleportActiveItem = 0;
-int gTeleportCurrentPage = 0;
-bool processTeleportMenu()
+const int teleportLineCount = 17;
+int teleportActiveItem = 0;
+int teleportCurrentPage = 0;
+static bool processTeleportMenu()
 {
 	std::string caption = "Teleport";
 	DWORD waitTime = 150;
 	const int itemsPerPage = 10;
-	const int numPages = (gTeleportLineCount + itemsPerPage - 1) / itemsPerPage;
-	gTeleportActiveItem = 0;
+	const int numPages = (teleportLineCount + itemsPerPage - 1) / itemsPerPage;
+	teleportActiveItem = 0;
 	while (true)
 	{
 		int itemsOnThisPage = 0;
 		for (int i = 0; i < itemsPerPage; i++)
 		{
-			int itemIndex = gTeleportCurrentPage * itemsPerPage + i;
-			if (itemIndex < gTeleportLineCount)
+			int itemIndex = teleportCurrentPage * itemsPerPage + i;
+			if (itemIndex < teleportLineCount)
 				itemsOnThisPage++;
 		}
-		DWORD maxTickCount = GetTickCount() + waitTime;
+		DWORD maxTickCount = GetTickCount64() + waitTime;
 		do
 		{
-			drawMenuLine(caption, gMenuWidth, 15.0, 18.0, 0.0, 5.0, false, true);
+			drawMenuLine(caption, menuWidth, 36.0, 18.0, 0.0, 5.0, false, true);
 			for (int i = 0; i < itemsOnThisPage; i++)
 			{
-				int itemIndex = gTeleportCurrentPage * itemsPerPage + i;
-				drawMenuLine(gTeleportLines[itemIndex].text, gMenuWidth, 9.0, gMenuTop + i * gMenuLineHeight, 0.0, 9.0, i == gTeleportActiveItem, false);
+				int itemIndex = teleportCurrentPage * itemsPerPage + i;
+				drawMenuLine(teleportLines[itemIndex].text, menuWidth, menuLineHeight, menuTop + i * menuLineHeight, 0.0, 9.0, i == teleportActiveItem, false);
 			}
-			drawMenuFooter(numPages, gTeleportCurrentPage);
+			drawMenuFooter(itemsOnThisPage, numPages, teleportCurrentPage);
 			updateFeatures();
 			WAIT(0);
-		} while (GetTickCount() < maxTickCount);
+		} while (GetTickCount64() < maxTickCount);
 		waitTime = 0;
 		bool bSelect, bBack, bUp, bDown, bLeft, bRight;
 		getButtonState(&bSelect, &bBack, &bUp, &bDown, &bLeft, &bRight);
-		int selectedGlobalIndex = gTeleportCurrentPage * itemsPerPage + gTeleportActiveItem;
+		int selectedGlobalIndex = teleportCurrentPage * itemsPerPage + teleportActiveItem;
 		if (bSelect)
 		{
 			menuBeep();
@@ -977,7 +982,7 @@ bool processTeleportMenu()
 					bool groundFound = false;
 					static float groundCheckHeight[] = {
 							100.0, 150.0, 50.0, 0.0, 200.0, 250.0, 300.0, 350.0, 400.0,
-							450.0, 500.0, 550.0, 600.0, 650.0, 700.0, 750.0, 800.0};
+							450.0, 500.0, 550.0, 600.0, 650.0, 700.0, 750.0, 800.0 };
 					for (int i = 0; i < sizeof(groundCheckHeight) / sizeof(float); i++)
 					{
 						ENTITY::SET_ENTITY_COORDS_NO_OFFSET(e, coords.x, coords.y, groundCheckHeight[i], 0, 0, 1);
@@ -1003,9 +1008,9 @@ bool processTeleportMenu()
 			}
 			else
 			{
-				coords.x = gTeleportLines[selectedGlobalIndex].x;
-				coords.y = gTeleportLines[selectedGlobalIndex].y;
-				coords.z = gTeleportLines[selectedGlobalIndex].z;
+				coords.x = teleportLines[selectedGlobalIndex].x;
+				coords.y = teleportLines[selectedGlobalIndex].y;
+				coords.z = teleportLines[selectedGlobalIndex].z;
 				success = true;
 			}
 			if (success)
@@ -1025,66 +1030,66 @@ bool processTeleportMenu()
 		else if (bLeft)
 		{
 			menuBeep();
-			if (gTeleportCurrentPage == 0)
-				gTeleportCurrentPage = numPages;
-			gTeleportCurrentPage--;
-			gTeleportActiveItem = 0;
+			if (teleportCurrentPage == 0)
+				teleportCurrentPage = numPages;
+			teleportCurrentPage--;
+			teleportActiveItem = 0;
 			waitTime = 150;
 		}
 		else if (bRight)
 		{
 			menuBeep();
-			gTeleportCurrentPage++;
-			if (gTeleportCurrentPage >= numPages)
-				gTeleportCurrentPage = 0;
-			gTeleportActiveItem = 0;
+			teleportCurrentPage++;
+			if (teleportCurrentPage >= numPages)
+				teleportCurrentPage = 0;
+			teleportActiveItem = 0;
 			waitTime = 150;
 		}
 		else if (bUp)
 		{
 			menuBeep();
-			if (gTeleportActiveItem == 0)
-				gTeleportActiveItem = itemsOnThisPage;
-			gTeleportActiveItem--;
+			if (teleportActiveItem == 0)
+				teleportActiveItem = itemsOnThisPage;
+			teleportActiveItem--;
 			waitTime = 150;
 		}
 		else if (bDown)
 		{
 			menuBeep();
-			gTeleportActiveItem++;
-			if (gTeleportActiveItem >= itemsOnThisPage)
-				gTeleportActiveItem = 0;
+			teleportActiveItem++;
+			if (teleportActiveItem >= itemsOnThisPage)
+				teleportActiveItem = 0;
 			waitTime = 150;
 		}
 	}
 	return false;
 }
-const int gPlayerLineCount = 14;
-int gPlayerActiveItem = 0;
-int gPlayerCurrentPage = 0;
-void processPlayerMenu()
+const int playerLineCount = 14;
+int playerActiveItem = 0;
+int playerCurrentPage = 0;
+static void processPlayerMenu()
 {
 	std::string caption = "Player";
 	DWORD waitTime = 150;
 	const int itemsPerPage = 10;
-	const int numPages = (gPlayerLineCount + itemsPerPage - 1) / itemsPerPage;
-	gPlayerActiveItem = 0;
+	const int numPages = (playerLineCount + itemsPerPage - 1) / itemsPerPage;
+	playerActiveItem = 0;
 	while (true)
 	{
 		int itemsOnThisPage = 0;
 		for (int i = 0; i < itemsPerPage; i++)
 		{
-			int itemIndex = gPlayerCurrentPage * itemsPerPage + i;
-			if (itemIndex < gPlayerLineCount)
+			int itemIndex = playerCurrentPage * itemsPerPage + i;
+			if (itemIndex < playerLineCount)
 				itemsOnThisPage++;
 		}
-		DWORD maxTickCount = GetTickCount() + waitTime;
+		DWORD maxTickCount = GetTickCount64() + waitTime;
 		do
 		{
-			drawMenuLine(caption, gMenuWidth, 15.0, 18.0, 0.0, 5.0, false, true);
+			drawMenuLine(caption, menuWidth, 36.0, 18.0, 0.0, 5.0, false, true);
 			for (int i = 0; i < itemsOnThisPage; i++)
 			{
-				int itemIndex = gPlayerCurrentPage * itemsPerPage + i;
+				int itemIndex = playerCurrentPage * itemsPerPage + i;
 				std::string stepperValue = "";
 				if (itemIndex == 5)
 				{
@@ -1092,16 +1097,16 @@ void processPlayerMenu()
 					int wantedLevel = PLAYER::GET_PLAYER_WANTED_LEVEL(player);
 					stepperValue = "< " + std::to_string(wantedLevel) + " >";
 				}
-				drawMenuLine(gPlayerLines[itemIndex].text, gMenuWidth, 9.0, gMenuTop + i * gMenuLineHeight, 0.0, 9.0, i == gPlayerActiveItem, false, true, gPlayerLines[itemIndex].pState, stepperValue);
+				drawMenuLine(playerLines[itemIndex].text, menuWidth, menuLineHeight, menuTop + i * menuLineHeight, 0.0, 9.0, i == playerActiveItem, false, true, playerLines[itemIndex].pState, stepperValue);
 			}
-			drawMenuFooter(numPages, gPlayerCurrentPage);
+			drawMenuFooter(itemsOnThisPage, numPages, playerCurrentPage);
 			updateFeatures();
 			WAIT(0);
-		} while (GetTickCount() < maxTickCount);
+		} while (GetTickCount64() < maxTickCount);
 		waitTime = 0;
 		bool bSelect, bBack, bUp, bDown, bLeft, bRight;
 		getButtonState(&bSelect, &bBack, &bUp, &bDown, &bLeft, &bRight);
-		int selectedGlobalIndex = gPlayerCurrentPage * itemsPerPage + gPlayerActiveItem;
+		int selectedGlobalIndex = playerCurrentPage * itemsPerPage + playerActiveItem;
 		if (bSelect)
 		{
 			menuBeep();
@@ -1152,10 +1157,10 @@ void processPlayerMenu()
 			case 5:
 				break;
 			default:
-				if (gPlayerLines[selectedGlobalIndex].pState)
-					*gPlayerLines[selectedGlobalIndex].pState = !(*gPlayerLines[selectedGlobalIndex].pState);
-				if (gPlayerLines[selectedGlobalIndex].pUpdated)
-					*gPlayerLines[selectedGlobalIndex].pUpdated = true;
+				if (playerLines[selectedGlobalIndex].pState)
+					*playerLines[selectedGlobalIndex].pState = !(*playerLines[selectedGlobalIndex].pState);
+				if (playerLines[selectedGlobalIndex].pUpdated)
+					*playerLines[selectedGlobalIndex].pUpdated = true;
 			}
 			waitTime = 200;
 		}
@@ -1181,10 +1186,10 @@ void processPlayerMenu()
 			else
 			{
 				menuBeep();
-				if (gPlayerCurrentPage == 0)
-					gPlayerCurrentPage = numPages;
-				gPlayerCurrentPage--;
-				gPlayerActiveItem = 0;
+				if (playerCurrentPage == 0)
+					playerCurrentPage = numPages;
+				playerCurrentPage--;
+				playerActiveItem = 0;
 				waitTime = 150;
 			}
 		}
@@ -1205,68 +1210,68 @@ void processPlayerMenu()
 			else
 			{
 				menuBeep();
-				gPlayerCurrentPage++;
-				if (gPlayerCurrentPage >= numPages)
-					gPlayerCurrentPage = 0;
-				gPlayerActiveItem = 0;
+				playerCurrentPage++;
+				if (playerCurrentPage >= numPages)
+					playerCurrentPage = 0;
+				playerActiveItem = 0;
 				waitTime = 150;
 			}
 		}
 		else if (bUp)
 		{
 			menuBeep();
-			if (gPlayerActiveItem == 0)
-				gPlayerActiveItem = itemsOnThisPage;
-			gPlayerActiveItem--;
+			if (playerActiveItem == 0)
+				playerActiveItem = itemsOnThisPage;
+			playerActiveItem--;
 			waitTime = 150;
 		}
 		else if (bDown)
 		{
 			menuBeep();
-			gPlayerActiveItem++;
-			if (gPlayerActiveItem >= itemsOnThisPage)
-				gPlayerActiveItem = 0;
+			playerActiveItem++;
+			if (playerActiveItem >= itemsOnThisPage)
+				playerActiveItem = 0;
 			waitTime = 150;
 		}
 	}
 }
-const int gWeaponLineCount = 6;
-const int gWeaponNamesCount = 59;
-int gWeaponActiveItem = 0;
-int gWeaponCurrentPage = 0;
-void processWeaponMenu()
+const int weaponLineCount = 6;
+const int weaponNamesCount = 59;
+int weaponActiveItem = 0;
+int weaponCurrentPage = 0;
+static void processWeaponMenu()
 {
 	std::string caption = "Weapon";
 	DWORD waitTime = 150;
 	const int itemsPerPage = 10;
-	const int numPages = (gWeaponLineCount + itemsPerPage - 1) / itemsPerPage;
-	gWeaponActiveItem = 0;
+	const int numPages = (weaponLineCount + itemsPerPage - 1) / itemsPerPage;
+	weaponActiveItem = 0;
 	while (true)
 	{
 		int itemsOnThisPage = 0;
 		for (int i = 0; i < itemsPerPage; i++)
 		{
-			int itemIndex = gWeaponCurrentPage * itemsPerPage + i;
-			if (itemIndex < gWeaponLineCount)
+			int itemIndex = weaponCurrentPage * itemsPerPage + i;
+			if (itemIndex < weaponLineCount)
 				itemsOnThisPage++;
 		}
-		DWORD maxTickCount = GetTickCount() + waitTime;
+		DWORD maxTickCount = GetTickCount64() + waitTime;
 		do
 		{
-			drawMenuLine(caption, gMenuWidth, 15.0, 18.0, 0.0, 5.0, false, true);
+			drawMenuLine(caption, menuWidth, 36.0, 18.0, 0.0, 5.0, false, true);
 			for (int i = 0; i < itemsOnThisPage; i++)
 			{
-				int itemIndex = gWeaponCurrentPage * itemsPerPage + i;
-				drawMenuLine(gWeaponLines[itemIndex].text, gMenuWidth, 9.0, gMenuTop + i * gMenuLineHeight, 0.0, 9.0, i == gWeaponActiveItem, false, true, gWeaponLines[itemIndex].pState);
+				int itemIndex = weaponCurrentPage * itemsPerPage + i;
+				drawMenuLine(weaponLines[itemIndex].text, menuWidth, menuLineHeight, menuTop + i * menuLineHeight, 0.0, 9.0, i == weaponActiveItem, false, true, weaponLines[itemIndex].pState);
 			}
-			drawMenuFooter(numPages, gWeaponCurrentPage);
+			drawMenuFooter(itemsOnThisPage, numPages, weaponCurrentPage);
 			updateFeatures();
 			WAIT(0);
-		} while (GetTickCount() < maxTickCount);
+		} while (GetTickCount64() < maxTickCount);
 		waitTime = 0;
 		bool bSelect, bBack, bUp, bDown, bLeft, bRight;
 		getButtonState(&bSelect, &bBack, &bUp, &bDown, &bLeft, &bRight);
-		int selectedGlobalIndex = gWeaponCurrentPage * itemsPerPage + gWeaponActiveItem;
+		int selectedGlobalIndex = weaponCurrentPage * itemsPerPage + weaponActiveItem;
 		if (bSelect)
 		{
 			menuBeep();
@@ -1274,15 +1279,15 @@ void processWeaponMenu()
 			switch (selectedGlobalIndex)
 			{
 			case 0:
-				for (int i = 0; i < gWeaponNamesCount; i++)
-					WEAPON::GIVE_DELAYED_WEAPON_TO_PED(playerPed, GAMEPLAY::GET_HASH_KEY((char *)gWeaponNames[i]), 1000, 0);
+				for (int i = 0; i < weaponNamesCount; i++)
+					WEAPON::GIVE_DELAYED_WEAPON_TO_PED(playerPed, GAMEPLAY::GET_HASH_KEY((char*)weaponNames[i]), 1000, 0);
 				setStatusText("All Weapon Added!");
 				break;
 			default:
-				if (gWeaponLines[selectedGlobalIndex].pState)
-					*gWeaponLines[selectedGlobalIndex].pState = !(*gWeaponLines[selectedGlobalIndex].pState);
-				if (gWeaponLines[selectedGlobalIndex].pUpdated)
-					*gWeaponLines[selectedGlobalIndex].pUpdated = true;
+				if (weaponLines[selectedGlobalIndex].pState)
+					*weaponLines[selectedGlobalIndex].pState = !(*weaponLines[selectedGlobalIndex].pState);
+				if (weaponLines[selectedGlobalIndex].pUpdated)
+					*weaponLines[selectedGlobalIndex].pUpdated = true;
 			}
 			waitTime = 200;
 		}
@@ -1294,78 +1299,78 @@ void processWeaponMenu()
 		else if (bLeft)
 		{
 			menuBeep();
-			if (gWeaponCurrentPage == 0)
-				gWeaponCurrentPage = numPages;
-			gWeaponCurrentPage--;
-			gWeaponActiveItem = 0;
+			if (weaponCurrentPage == 0)
+				weaponCurrentPage = numPages;
+			weaponCurrentPage--;
+			weaponActiveItem = 0;
 			waitTime = 150;
 		}
 		else if (bRight)
 		{
 			menuBeep();
-			gWeaponCurrentPage++;
-			if (gWeaponCurrentPage >= numPages)
-				gWeaponCurrentPage = 0;
-			gWeaponActiveItem = 0;
+			weaponCurrentPage++;
+			if (weaponCurrentPage >= numPages)
+				weaponCurrentPage = 0;
+			weaponActiveItem = 0;
 			waitTime = 150;
 		}
 		else if (bUp)
 		{
 			menuBeep();
-			if (gWeaponActiveItem == 0)
-				gWeaponActiveItem = itemsOnThisPage;
-			gWeaponActiveItem--;
+			if (weaponActiveItem == 0)
+				weaponActiveItem = itemsOnThisPage;
+			weaponActiveItem--;
 			waitTime = 150;
 		}
 		else if (bDown)
 		{
 			menuBeep();
-			gWeaponActiveItem++;
-			if (gWeaponActiveItem >= itemsOnThisPage)
-				gWeaponActiveItem = 0;
+			weaponActiveItem++;
+			if (weaponActiveItem >= itemsOnThisPage)
+				weaponActiveItem = 0;
 			waitTime = 150;
 		}
 	}
 }
-int gCarspawnCurrentPage = 0;
-int gCarspawnActiveItem = 0;
-bool processCarspawnMenu()
+int carspawnCurrentPage = 0;
+int carspawnActiveItem = 0;
+static bool processCarspawnMenu()
 {
 	DWORD waitTime = 150;
 	const int itemsPerPage = 10;
 	const int numPages = 40;
-	gCarspawnActiveItem = 0;
+	carspawnActiveItem = 0;
 	while (true)
 	{
 		int itemsOnThisPage = 0;
 		for (int i = 0; i < itemsPerPage; i++)
 		{
-			if (strlen(gVehicleModels[gCarspawnCurrentPage][i]) > 0)
+			if (strlen(vehicleModels[carspawnCurrentPage][i]) > 0)
 				itemsOnThisPage++;
 		}
-		DWORD maxTickCount = GetTickCount() + waitTime;
+		DWORD maxTickCount = GetTickCount64() + waitTime;
 		do
 		{
 			char caption[32];
-			sprintf_s(caption, "Car Spawner %d / %d", gCarspawnCurrentPage + 1, numPages);
-			drawMenuLine(caption, gMenuWidth, 15.0, 18.0, 0.0, 5.0, false, true);
+			sprintf_s(caption, "Car Spawner %d / %d", carspawnCurrentPage + 1, numPages);
+			drawMenuLine(caption, menuWidth, 36.0, 18.0, 0.0, 5.0, false, true);
 			for (int i = 0; i < itemsOnThisPage; i++)
 			{
-				LPCSTR modelName = gVehicleModels[gCarspawnCurrentPage][i];
-				drawMenuLine(modelName, gMenuWidth, 9.0, gMenuTop + i * gMenuLineHeight, 0.0, 9.0, i == gCarspawnActiveItem, false, false);
+				LPCSTR modelName = vehicleModels[carspawnCurrentPage][i];
+				drawMenuLine(modelName, menuWidth, menuLineHeight, menuTop + i * menuLineHeight, 0.0, 9.0, i == carspawnActiveItem, false, false);
 			}
-			drawMenuFooter(numPages, gCarspawnCurrentPage);
+			drawMenuFooter(itemsOnThisPage, numPages, carspawnCurrentPage);
 			updateFeatures();
 			WAIT(0);
-		} while (GetTickCount() < maxTickCount);
+		} while (GetTickCount64() < maxTickCount);
 		waitTime = 0;
 		bool bSelect, bBack, bUp, bDown, bLeft, bRight;
 		getButtonState(&bSelect, &bBack, &bUp, &bDown, &bLeft, &bRight);
 		if (bSelect)
 		{
 			menuBeep();
-			LPCSTR modelName = gVehicleModels[gCarspawnCurrentPage][gCarspawnActiveItem];
-			DWORD model = GAMEPLAY::GET_HASH_KEY((char *)modelName);
+			LPCSTR modelName = vehicleModels[carspawnCurrentPage][carspawnActiveItem];
+			DWORD model = GAMEPLAY::GET_HASH_KEY((char*)modelName);
 			if (STREAMING::IS_MODEL_IN_CDIMAGE(model) && STREAMING::IS_MODEL_A_VEHICLE(model))
 			{
 				STREAMING::REQUEST_MODEL(model);
@@ -1374,7 +1379,7 @@ bool processCarspawnMenu()
 				Vector3 coords = ENTITY::GET_OFFSET_FROM_ENTITY_IN_WORLD_COORDS(PLAYER::PLAYER_PED_ID(), 0.0, 5.0, 0.0);
 				Vehicle veh = VEHICLE::CREATE_VEHICLE(model, coords.x, coords.y, coords.z, 0.0, 1, 1);
 				VEHICLE::SET_VEHICLE_ON_GROUND_PROPERLY(veh);
-				if (gFeatureVehWrapInSpawned)
+				if (featureVehWrapInSpawned)
 				{
 					ENTITY::SET_ENTITY_HEADING(veh, ENTITY::GET_ENTITY_HEADING(PLAYER::PLAYER_PED_ID()));
 					PED::SET_PED_INTO_VEHICLE(PLAYER::PLAYER_PED_ID(), veh, -1);
@@ -1396,76 +1401,76 @@ bool processCarspawnMenu()
 		else if (bRight)
 		{
 			menuBeep();
-			gCarspawnCurrentPage++;
-			if (gCarspawnCurrentPage >= numPages)
-				gCarspawnCurrentPage = 0;
-			gCarspawnActiveItem = 0;
+			carspawnCurrentPage++;
+			if (carspawnCurrentPage >= numPages)
+				carspawnCurrentPage = 0;
+			carspawnActiveItem = 0;
 			waitTime = 100;
 		}
 		else if (bLeft)
 		{
 			menuBeep();
-			if (gCarspawnCurrentPage == 0)
-				gCarspawnCurrentPage = numPages;
-			gCarspawnCurrentPage--;
-			gCarspawnActiveItem = 0;
+			if (carspawnCurrentPage == 0)
+				carspawnCurrentPage = numPages;
+			carspawnCurrentPage--;
+			carspawnActiveItem = 0;
 			waitTime = 100;
 		}
 		else if (bUp)
 		{
 			menuBeep();
-			if (gCarspawnActiveItem == 0)
-				gCarspawnActiveItem = itemsOnThisPage;
-			gCarspawnActiveItem--;
+			if (carspawnActiveItem == 0)
+				carspawnActiveItem = itemsOnThisPage;
+			carspawnActiveItem--;
 			waitTime = 100;
 		}
 		else if (bDown)
 		{
 			menuBeep();
-			gCarspawnActiveItem++;
-			if (gCarspawnActiveItem >= itemsOnThisPage)
-				gCarspawnActiveItem = 0;
+			carspawnActiveItem++;
+			if (carspawnActiveItem >= itemsOnThisPage)
+				carspawnActiveItem = 0;
 			waitTime = 100;
 		}
 	}
 	return false;
 }
-const int gVehicleLineCount = 8;
-int gVehicleActiveItem = 0;
-int gVehicleCurrentPage = 0;
-void processVehMenu()
+const int vehicleLineCount = 8;
+int vehicleActiveItem = 0;
+int vehicleCurrentPage = 0;
+static void processVehMenu()
 {
 	std::string caption = "Vehicle";
 	DWORD waitTime = 150;
 	const int itemsPerPage = 10;
-	const int numPages = (gVehicleLineCount + itemsPerPage - 1) / itemsPerPage;
-	gVehicleActiveItem = 0;
+	const int numPages = (vehicleLineCount + itemsPerPage - 1) / itemsPerPage;
+	vehicleActiveItem = 0;
 	while (true)
 	{
 		int itemsOnThisPage = 0;
 		for (int i = 0; i < itemsPerPage; i++)
 		{
-			int itemIndex = gVehicleCurrentPage * itemsPerPage + i;
-			if (itemIndex < gVehicleLineCount)
+			int itemIndex = vehicleCurrentPage * itemsPerPage + i;
+			if (itemIndex < vehicleLineCount)
 				itemsOnThisPage++;
 		}
-		DWORD maxTickCount = GetTickCount() + waitTime;
+		DWORD maxTickCount = GetTickCount64() + waitTime;
 		do
 		{
-			drawMenuLine(caption, gMenuWidth, 15.0, 18.0, 0.0, 5.0, false, true);
+			drawMenuLine(caption, menuWidth, 36.0, 18.0, 0.0, 5.0, false, true);
 			for (int i = 0; i < itemsOnThisPage; i++)
 			{
-				int itemIndex = gVehicleCurrentPage * itemsPerPage + i;
-				drawMenuLine(gVehicleLines[itemIndex].text, gMenuWidth, 9.0, gMenuTop + i * gMenuLineHeight, 0.0, 9.0, i == gVehicleActiveItem, false, true, gVehicleLines[itemIndex].pState);
+				int itemIndex = vehicleCurrentPage * itemsPerPage + i;
+				drawMenuLine(vehicleLines[itemIndex].text, menuWidth, menuLineHeight, menuTop + i * menuLineHeight, 0.0, 9.0, i == vehicleActiveItem, false, true, vehicleLines[itemIndex].pState);
 			}
-			drawMenuFooter(numPages, gVehicleCurrentPage);
+			drawMenuFooter(itemsOnThisPage, numPages, vehicleCurrentPage);
 			updateFeatures();
 			WAIT(0);
-		} while (GetTickCount() < maxTickCount);
+		} while (GetTickCount64() < maxTickCount);
 		waitTime = 0;
 		bool bSelect, bBack, bUp, bDown, bLeft, bRight;
 		getButtonState(&bSelect, &bBack, &bUp, &bDown, &bLeft, &bRight);
-		int selectedGlobalIndex = gVehicleCurrentPage * itemsPerPage + gVehicleActiveItem;
+		int selectedGlobalIndex = vehicleCurrentPage * itemsPerPage + vehicleActiveItem;
 		if (bSelect)
 		{
 			menuBeep();
@@ -1501,10 +1506,10 @@ void processVehMenu()
 						setStatusText("Player Isn't In A Vehicle!");
 				break;
 			default:
-				if (gVehicleLines[selectedGlobalIndex].pState)
-					*gVehicleLines[selectedGlobalIndex].pState = !(*gVehicleLines[selectedGlobalIndex].pState);
-				if (gVehicleLines[selectedGlobalIndex].pUpdated)
-					*gVehicleLines[selectedGlobalIndex].pUpdated = true;
+				if (vehicleLines[selectedGlobalIndex].pState)
+					*vehicleLines[selectedGlobalIndex].pState = !(*vehicleLines[selectedGlobalIndex].pState);
+				if (vehicleLines[selectedGlobalIndex].pUpdated)
+					*vehicleLines[selectedGlobalIndex].pUpdated = true;
 			}
 			waitTime = 200;
 		}
@@ -1516,98 +1521,98 @@ void processVehMenu()
 		else if (bLeft)
 		{
 			menuBeep();
-			if (gVehicleCurrentPage == 0)
-				gVehicleCurrentPage = numPages;
-			gVehicleCurrentPage--;
-			gVehicleActiveItem = 0;
+			if (vehicleCurrentPage == 0)
+				vehicleCurrentPage = numPages;
+			vehicleCurrentPage--;
+			vehicleActiveItem = 0;
 			waitTime = 150;
 		}
 		else if (bRight)
 		{
 			menuBeep();
-			gVehicleCurrentPage++;
-			if (gVehicleCurrentPage >= numPages)
-				gVehicleCurrentPage = 0;
-			gVehicleActiveItem = 0;
+			vehicleCurrentPage++;
+			if (vehicleCurrentPage >= numPages)
+				vehicleCurrentPage = 0;
+			vehicleActiveItem = 0;
 			waitTime = 150;
 		}
 		else if (bUp)
 		{
 			menuBeep();
-			if (gVehicleActiveItem == 0)
-				gVehicleActiveItem = itemsOnThisPage;
-			gVehicleActiveItem--;
+			if (vehicleActiveItem == 0)
+				vehicleActiveItem = itemsOnThisPage;
+			vehicleActiveItem--;
 			waitTime = 150;
 		}
 		else if (bDown)
 		{
 			menuBeep();
-			gVehicleActiveItem++;
-			if (gVehicleActiveItem >= itemsOnThisPage)
-				gVehicleActiveItem = 0;
+			vehicleActiveItem++;
+			if (vehicleActiveItem >= itemsOnThisPage)
+				vehicleActiveItem = 0;
 			waitTime = 150;
 		}
 	}
 }
-const int gWorldLineCount = 5;
-int gWorldActiveItem = 0;
-int gWorldCurrentPage = 0;
-void processWorldMenu()
+const int worldLineCount = 5;
+int worldActiveItem = 0;
+int worldCurrentPage = 0;
+static void processWorldMenu()
 {
 	std::string caption = "World";
 	DWORD waitTime = 150;
 	const int itemsPerPage = 10;
-	const int numPages = (gWorldLineCount + itemsPerPage - 1) / itemsPerPage;
-	gWorldActiveItem = 0;
+	const int numPages = (worldLineCount + itemsPerPage - 1) / itemsPerPage;
+	worldActiveItem = 0;
 	while (true)
 	{
 		int itemsOnThisPage = 0;
 		for (int i = 0; i < itemsPerPage; i++)
 		{
-			int itemIndex = gWorldCurrentPage * itemsPerPage + i;
-			if (itemIndex < gWorldLineCount)
+			int itemIndex = worldCurrentPage * itemsPerPage + i;
+			if (itemIndex < worldLineCount)
 				itemsOnThisPage++;
 		}
-		DWORD maxTickCount = GetTickCount() + waitTime;
+		DWORD maxTickCount = GetTickCount64() + waitTime;
 		do
 		{
-			drawMenuLine(caption, gMenuWidth, 15.0, 18.0, 0.0, 5.0, false, true);
+			drawMenuLine(caption, menuWidth, 36.0, 18.0, 0.0, 5.0, false, true);
 			for (int i = 0; i < itemsOnThisPage; i++)
 			{
-				int itemIndex = gWorldCurrentPage * itemsPerPage + i;
-				drawMenuLine(gWorldLines[itemIndex].text, gMenuWidth, 9.0, gMenuTop + i * gMenuLineHeight, 0.0, 9.0, i == gWorldActiveItem, false, true, gWorldLines[itemIndex].pState);
+				int itemIndex = worldCurrentPage * itemsPerPage + i;
+				drawMenuLine(worldLines[itemIndex].text, menuWidth, menuLineHeight, menuTop + i * menuLineHeight, 0.0, 9.0, i == worldActiveItem, false, true, worldLines[itemIndex].pState);
 			}
-			drawMenuFooter(numPages, gWorldCurrentPage);
+			drawMenuFooter(itemsOnThisPage, numPages, worldCurrentPage);
 			updateFeatures();
 			WAIT(0);
-		} while (GetTickCount() < maxTickCount);
+		} while (GetTickCount64() < maxTickCount);
 		waitTime = 0;
 		bool bSelect, bBack, bUp, bDown, bLeft, bRight;
 		getButtonState(&bSelect, &bBack, &bUp, &bDown, &bLeft, &bRight);
-		int selectedGlobalIndex = gWorldCurrentPage * itemsPerPage + gWorldActiveItem;
+		int selectedGlobalIndex = worldCurrentPage * itemsPerPage + worldActiveItem;
 		if (bSelect)
 		{
 			menuBeep();
 			switch (selectedGlobalIndex)
 			{
 			case 0:
-				gFeatureWorldMoonGravity = !gFeatureWorldMoonGravity;
-				GAMEPLAY::SET_GRAVITY_LEVEL(gFeatureWorldMoonGravity ? 2 : 0);
+				featureWorldMoonGravity = !featureWorldMoonGravity;
+				GAMEPLAY::SET_GRAVITY_LEVEL(featureWorldMoonGravity ? 2 : 0);
 				break;
 			case 1:
-				PED::SET_CREATE_RANDOM_COPS(!gFeatureWorldRandomCops);
+				PED::SET_CREATE_RANDOM_COPS(!featureWorldRandomCops);
 				break;
 			case 2:
-				gFeatureWorldRandomTrains = !gFeatureWorldRandomTrains;
-				VEHICLE::SET_RANDOM_TRAINS(gFeatureWorldRandomTrains);
+				featureWorldRandomTrains = !featureWorldRandomTrains;
+				VEHICLE::SET_RANDOM_TRAINS(featureWorldRandomTrains);
 				break;
 			case 3:
-				gFeatureWorldRandomBoats = !gFeatureWorldRandomBoats;
-				VEHICLE::SET_RANDOM_BOATS(gFeatureWorldRandomBoats);
+				featureWorldRandomBoats = !featureWorldRandomBoats;
+				VEHICLE::SET_RANDOM_BOATS(featureWorldRandomBoats);
 				break;
 			case 4:
-				gFeatureWorldGarbageTrucks = !gFeatureWorldGarbageTrucks;
-				VEHICLE::SET_GARBAGE_TRUCKS(gFeatureWorldGarbageTrucks);
+				featureWorldGarbageTrucks = !featureWorldGarbageTrucks;
+				VEHICLE::SET_GARBAGE_TRUCKS(featureWorldGarbageTrucks);
 				break;
 			}
 			waitTime = 200;
@@ -1620,65 +1625,65 @@ void processWorldMenu()
 		else if (bLeft)
 		{
 			menuBeep();
-			if (gWorldCurrentPage == 0)
-				gWorldCurrentPage = numPages;
-			gWorldCurrentPage--;
-			gWorldActiveItem = 0;
+			if (worldCurrentPage == 0)
+				worldCurrentPage = numPages;
+			worldCurrentPage--;
+			worldActiveItem = 0;
 			waitTime = 150;
 		}
 		else if (bRight)
 		{
 			menuBeep();
-			gWorldCurrentPage++;
-			if (gWorldCurrentPage >= numPages)
-				gWorldCurrentPage = 0;
-			gWorldActiveItem = 0;
+			worldCurrentPage++;
+			if (worldCurrentPage >= numPages)
+				worldCurrentPage = 0;
+			worldActiveItem = 0;
 			waitTime = 150;
 		}
 		else if (bUp)
 		{
 			menuBeep();
-			if (gWorldActiveItem == 0)
-				gWorldActiveItem = itemsOnThisPage;
-			gWorldActiveItem--;
+			if (worldActiveItem == 0)
+				worldActiveItem = itemsOnThisPage;
+			worldActiveItem--;
 			waitTime = 150;
 		}
 		else if (bDown)
 		{
 			menuBeep();
-			gWorldActiveItem++;
-			if (gWorldActiveItem >= itemsOnThisPage)
-				gWorldActiveItem = 0;
+			worldActiveItem++;
+			if (worldActiveItem >= itemsOnThisPage)
+				worldActiveItem = 0;
 			waitTime = 150;
 		}
 	}
 }
-const int gTimeLineCount = 3;
-int gTimeActiveItem = 0;
-int gTimeCurrentPage = 0;
-void processTimeMenu()
+const int timeLineCount = 3;
+int timeActiveItem = 0;
+int timeCurrentPage = 0;
+static void processTimeMenu()
 {
 	std::string caption = "Time";
 	DWORD waitTime = 150;
 	const int itemsPerPage = 10;
-	const int numPages = (gTimeLineCount + itemsPerPage - 1) / itemsPerPage;
-	gTimeActiveItem = 0;
+	const int numPages = (timeLineCount + itemsPerPage - 1) / itemsPerPage;
+	timeActiveItem = 0;
 	while (true)
 	{
 		int itemsOnThisPage = 0;
 		for (int i = 0; i < itemsPerPage; i++)
 		{
-			int itemIndex = gTimeCurrentPage * itemsPerPage + i;
-			if (itemIndex < gTimeLineCount)
+			int itemIndex = timeCurrentPage * itemsPerPage + i;
+			if (itemIndex < timeLineCount)
 				itemsOnThisPage++;
 		}
-		DWORD maxTickCount = GetTickCount() + waitTime;
+		DWORD maxTickCount = GetTickCount64() + waitTime;
 		do
 		{
-			drawMenuLine(caption, gMenuWidth, 15.0, 18.0, 0.0, 5.0, false, true);
+			drawMenuLine(caption, menuWidth, 36.0, 18.0, 0.0, 5.0, false, true);
 			for (int i = 0; i < itemsOnThisPage; i++)
 			{
-				int itemIndex = gTimeCurrentPage * itemsPerPage + i;
+				int itemIndex = timeCurrentPage * itemsPerPage + i;
 				std::string stepperValue = "";
 				if (itemIndex == 0)
 				{
@@ -1688,16 +1693,16 @@ void processTimeMenu()
 					sprintf_s(timeStr, "< %02d:%02d >", h, m);
 					stepperValue = timeStr;
 				}
-				drawMenuLine(gTimeLines[itemIndex].text, gMenuWidth, 9.0, gMenuTop + i * gMenuLineHeight, 0.0, 9.0, i == gTimeActiveItem, false, true, gTimeLines[itemIndex].pState, stepperValue);
+				drawMenuLine(timeLines[itemIndex].text, menuWidth, menuLineHeight, menuTop + i * menuLineHeight, 0.0, 9.0, i == timeActiveItem, false, true, timeLines[itemIndex].pState, stepperValue);
 			}
-			drawMenuFooter(numPages, gTimeCurrentPage);
+			drawMenuFooter(itemsOnThisPage, numPages, timeCurrentPage);
 			updateFeatures();
 			WAIT(0);
-		} while (GetTickCount() < maxTickCount);
+		} while (GetTickCount64() < maxTickCount);
 		waitTime = 0;
 		bool bSelect, bBack, bUp, bDown, bLeft, bRight;
 		getButtonState(&bSelect, &bBack, &bUp, &bDown, &bLeft, &bRight);
-		int selectedGlobalIndex = gTimeCurrentPage * itemsPerPage + gTimeActiveItem;
+		int selectedGlobalIndex = timeCurrentPage * itemsPerPage + timeActiveItem;
 		if (bSelect)
 		{
 			menuBeep();
@@ -1706,10 +1711,10 @@ void processTimeMenu()
 			case 0:
 				break;
 			default:
-				if (gTimeLines[selectedGlobalIndex].pState)
-					*gTimeLines[selectedGlobalIndex].pState = !(*gTimeLines[selectedGlobalIndex].pState);
-				if (gTimeLines[selectedGlobalIndex].pUpdated)
-					*gTimeLines[selectedGlobalIndex].pUpdated = true;
+				if (timeLines[selectedGlobalIndex].pState)
+					*timeLines[selectedGlobalIndex].pState = !(*timeLines[selectedGlobalIndex].pState);
+				if (timeLines[selectedGlobalIndex].pUpdated)
+					*timeLines[selectedGlobalIndex].pUpdated = true;
 			}
 			waitTime = 200;
 		}
@@ -1732,10 +1737,10 @@ void processTimeMenu()
 			else
 			{
 				menuBeep();
-				if (gTimeCurrentPage == 0)
-					gTimeCurrentPage = numPages;
-				gTimeCurrentPage--;
-				gTimeActiveItem = 0;
+				if (timeCurrentPage == 0)
+					timeCurrentPage = numPages;
+				timeCurrentPage--;
+				timeActiveItem = 0;
 				waitTime = 150;
 			}
 		}
@@ -1753,75 +1758,75 @@ void processTimeMenu()
 			else
 			{
 				menuBeep();
-				gTimeCurrentPage++;
-				if (gTimeCurrentPage >= numPages)
-					gTimeCurrentPage = 0;
-				gTimeActiveItem = 0;
+				timeCurrentPage++;
+				if (timeCurrentPage >= numPages)
+					timeCurrentPage = 0;
+				timeActiveItem = 0;
 				waitTime = 150;
 			}
 		}
 		else if (bUp)
 		{
 			menuBeep();
-			if (gTimeActiveItem == 0)
-				gTimeActiveItem = itemsOnThisPage;
-			gTimeActiveItem--;
+			if (timeActiveItem == 0)
+				timeActiveItem = itemsOnThisPage;
+			timeActiveItem--;
 			waitTime = 150;
 		}
 		else if (bDown)
 		{
 			menuBeep();
-			gTimeActiveItem++;
-			if (gTimeActiveItem >= itemsOnThisPage)
-				gTimeActiveItem = 0;
+			timeActiveItem++;
+			if (timeActiveItem >= itemsOnThisPage)
+				timeActiveItem = 0;
 			waitTime = 150;
 		}
 	}
 }
-const int gWeatherLineCount = 16;
-int gWeatherActiveItem = 0;
-int gWeatherCurrentPage = 0;
-void processWeatherMenu()
+const int weatherLineCount = 16;
+int weatherActiveItem = 0;
+int weatherCurrentPage = 0;
+static void processWeatherMenu()
 {
 	std::string caption = "Weather";
 	DWORD waitTime = 150;
 	const int itemsPerPage = 10;
-	const int numPages = (gWeatherLineCount + itemsPerPage - 1) / itemsPerPage;
-	gWeatherActiveItem = 0;
+	const int numPages = (weatherLineCount + itemsPerPage - 1) / itemsPerPage;
+	weatherActiveItem = 0;
 	while (true)
 	{
 		int itemsOnThisPage = 0;
 		for (int i = 0; i < itemsPerPage; i++)
 		{
-			int itemIndex = gWeatherCurrentPage * itemsPerPage + i;
-			if (itemIndex < gWeatherLineCount)
+			int itemIndex = weatherCurrentPage * itemsPerPage + i;
+			if (itemIndex < weatherLineCount)
 				itemsOnThisPage++;
 		}
-		DWORD maxTickCount = GetTickCount() + waitTime;
+		DWORD maxTickCount = GetTickCount64() + waitTime;
 		do
 		{
-			drawMenuLine(caption, gMenuWidth, 15.0, 18.0, 0.0, 5.0, false, true);
+			drawMenuLine(caption, menuWidth, 36.0, 18.0, 0.0, 5.0, false, true);
 			for (int i = 0; i < itemsOnThisPage; i++)
 			{
-				int itemIndex = gWeatherCurrentPage * itemsPerPage + i;
-				drawMenuLine(gWeatherLines[itemIndex].text, gMenuWidth, 9.0, gMenuTop + i * gMenuLineHeight, 0.0, 9.0, i == gWeatherActiveItem, false, true, gWeatherLines[itemIndex].pState);
+				int itemIndex = weatherCurrentPage * itemsPerPage + i;
+				drawMenuLine(weatherLines[itemIndex].text, menuWidth, menuLineHeight, menuTop + i * menuLineHeight, 0.0, 9.0, i == weatherActiveItem, false, true, weatherLines[itemIndex].pState);
 			}
-			drawMenuFooter(numPages, gWeatherCurrentPage);
+			drawMenuFooter(itemsOnThisPage, numPages, weatherCurrentPage);
 			updateFeatures();
 			WAIT(0);
-		} while (GetTickCount() < maxTickCount);
+		} while (GetTickCount64() < maxTickCount);
 		waitTime = 0;
 		bool bSelect, bBack, bUp, bDown, bLeft, bRight;
 		getButtonState(&bSelect, &bBack, &bUp, &bDown, &bLeft, &bRight);
-		int selectedGlobalIndex = gWeatherCurrentPage * itemsPerPage + gWeatherActiveItem;
+		int selectedGlobalIndex = weatherCurrentPage * itemsPerPage + weatherActiveItem;
 		if (bSelect)
 		{
 			menuBeep();
 			switch (selectedGlobalIndex)
 			{
 			case 0:
-				gFeatureWeatherWind = !gFeatureWeatherWind;
-				if (gFeatureWeatherWind)
+				featureWeatherWind = !featureWeatherWind;
+				if (featureWeatherWind)
 				{
 					GAMEPLAY::SET_WIND(1.0);
 					GAMEPLAY::SET_WIND_SPEED(11.99);
@@ -1834,20 +1839,20 @@ void processWeatherMenu()
 				}
 				break;
 			case 1:
-				gFeatureWeatherPers = !gFeatureWeatherPers;
+				featureWeatherPers = !featureWeatherPers;
 				break;
 			default:
 				GAMEPLAY::CLEAR_OVERRIDE_WEATHER();
-				if (gFeatureWeatherPers)
+				if (featureWeatherPers)
 				{
-					GAMEPLAY::SET_OVERRIDE_WEATHER((char *)gWeatherLines[selectedGlobalIndex].text);
+					GAMEPLAY::SET_OVERRIDE_WEATHER((char*)weatherLines[selectedGlobalIndex].text);
 				}
 				else
 				{
-					GAMEPLAY::SET_WEATHER_TYPE_NOW_PERSIST((char *)gWeatherLines[selectedGlobalIndex].text);
+					GAMEPLAY::SET_WEATHER_TYPE_NOW_PERSIST((char*)weatherLines[selectedGlobalIndex].text);
 					GAMEPLAY::CLEAR_WEATHER_TYPE_PERSIST();
 				}
-				setStatusText(gWeatherLines[selectedGlobalIndex].text);
+				setStatusText(weatherLines[selectedGlobalIndex].text);
 			}
 			waitTime = 200;
 		}
@@ -1859,75 +1864,75 @@ void processWeatherMenu()
 		else if (bLeft)
 		{
 			menuBeep();
-			if (gWeatherCurrentPage == 0)
-				gWeatherCurrentPage = numPages;
-			gWeatherCurrentPage--;
-			gWeatherActiveItem = 0;
+			if (weatherCurrentPage == 0)
+				weatherCurrentPage = numPages;
+			weatherCurrentPage--;
+			weatherActiveItem = 0;
 			waitTime = 150;
 		}
 		else if (bRight)
 		{
 			menuBeep();
-			gWeatherCurrentPage++;
-			if (gWeatherCurrentPage >= numPages)
-				gWeatherCurrentPage = 0;
-			gWeatherActiveItem = 0;
+			weatherCurrentPage++;
+			if (weatherCurrentPage >= numPages)
+				weatherCurrentPage = 0;
+			weatherActiveItem = 0;
 			waitTime = 150;
 		}
 		else if (bUp)
 		{
 			menuBeep();
-			if (gWeatherActiveItem == 0)
-				gWeatherActiveItem = itemsOnThisPage;
-			gWeatherActiveItem--;
+			if (weatherActiveItem == 0)
+				weatherActiveItem = itemsOnThisPage;
+			weatherActiveItem--;
 			waitTime = 150;
 		}
 		else if (bDown)
 		{
 			menuBeep();
-			gWeatherActiveItem++;
-			if (gWeatherActiveItem >= itemsOnThisPage)
-				gWeatherActiveItem = 0;
+			weatherActiveItem++;
+			if (weatherActiveItem >= itemsOnThisPage)
+				weatherActiveItem = 0;
 			waitTime = 150;
 		}
 	}
 }
-const int gMiscLineCount = 2;
-int gMiscActiveItem = 0;
-int gMiscCurrentPage = 0;
-void processMiscMenu()
+const int miscLineCount = 2;
+int miscActiveItem = 0;
+int miscCurrentPage = 0;
+static void processMiscMenu()
 {
 	std::string caption = "Misc";
 	DWORD waitTime = 150;
 	const int itemsPerPage = 10;
-	const int numPages = (gMiscLineCount + itemsPerPage - 1) / itemsPerPage;
-	gMiscActiveItem = 0;
+	const int numPages = (miscLineCount + itemsPerPage - 1) / itemsPerPage;
+	miscActiveItem = 0;
 	while (true)
 	{
 		int itemsOnThisPage = 0;
 		for (int i = 0; i < itemsPerPage; i++)
 		{
-			int itemIndex = gMiscCurrentPage * itemsPerPage + i;
-			if (itemIndex < gMiscLineCount)
+			int itemIndex = miscCurrentPage * itemsPerPage + i;
+			if (itemIndex < miscLineCount)
 				itemsOnThisPage++;
 		}
-		DWORD maxTickCount = GetTickCount() + waitTime;
+		DWORD maxTickCount = GetTickCount64() + waitTime;
 		do
 		{
-			drawMenuLine(caption, gMenuWidth, 15.0, 18.0, 0.0, 5.0, false, true);
+			drawMenuLine(caption, menuWidth, 36.0, 18.0, 0.0, 5.0, false, true);
 			for (int i = 0; i < itemsOnThisPage; i++)
 			{
-				int itemIndex = gMiscCurrentPage * itemsPerPage + i;
-				drawMenuLine(gMiscLines[itemIndex].text, gMenuWidth, 9.0, gMenuTop + i * gMenuLineHeight, 0.0, 9.0, i == gMiscActiveItem, false, true, gMiscLines[itemIndex].pState);
+				int itemIndex = miscCurrentPage * itemsPerPage + i;
+				drawMenuLine(miscLines[itemIndex].text, menuWidth, menuLineHeight, menuTop + i * menuLineHeight, 0.0, 9.0, i == miscActiveItem, false, true, miscLines[itemIndex].pState);
 			}
-			drawMenuFooter(numPages, gMiscCurrentPage);
+			drawMenuFooter(itemsOnThisPage, numPages, miscCurrentPage);
 			updateFeatures();
 			WAIT(0);
-		} while (GetTickCount() < maxTickCount);
+		} while (GetTickCount64() < maxTickCount);
 		waitTime = 0;
 		bool bSelect, bBack, bUp, bDown, bLeft, bRight;
 		getButtonState(&bSelect, &bBack, &bUp, &bDown, &bLeft, &bRight);
-		int selectedGlobalIndex = gMiscCurrentPage * itemsPerPage + gMiscActiveItem;
+		int selectedGlobalIndex = miscCurrentPage * itemsPerPage + miscActiveItem;
 		if (bSelect)
 		{
 			menuBeep();
@@ -1935,14 +1940,14 @@ void processMiscMenu()
 			{
 			case 0:
 				if (ENTITY::DOES_ENTITY_EXIST(PLAYER::PLAYER_PED_ID()) &&
-						PED::IS_PED_IN_ANY_VEHICLE(PLAYER::PLAYER_PED_ID(), 0))
+					PED::IS_PED_IN_ANY_VEHICLE(PLAYER::PLAYER_PED_ID(), 0))
 					AUDIO::SKIP_RADIO_FORWARD();
 				break;
 			default:
-				if (gMiscLines[selectedGlobalIndex].pState)
-					*gMiscLines[selectedGlobalIndex].pState = !(*gMiscLines[selectedGlobalIndex].pState);
-				if (gMiscLines[selectedGlobalIndex].pUpdated)
-					*gMiscLines[selectedGlobalIndex].pUpdated = true;
+				if (miscLines[selectedGlobalIndex].pState)
+					*miscLines[selectedGlobalIndex].pState = !(*miscLines[selectedGlobalIndex].pState);
+				if (miscLines[selectedGlobalIndex].pUpdated)
+					*miscLines[selectedGlobalIndex].pUpdated = true;
 			}
 			waitTime = 200;
 		}
@@ -1954,75 +1959,75 @@ void processMiscMenu()
 		else if (bLeft)
 		{
 			menuBeep();
-			if (gMiscCurrentPage == 0)
-				gMiscCurrentPage = numPages;
-			gMiscCurrentPage--;
-			gMiscActiveItem = 0;
+			if (miscCurrentPage == 0)
+				miscCurrentPage = numPages;
+			miscCurrentPage--;
+			miscActiveItem = 0;
 			waitTime = 150;
 		}
 		else if (bRight)
 		{
 			menuBeep();
-			gMiscCurrentPage++;
-			if (gMiscCurrentPage >= numPages)
-				gMiscCurrentPage = 0;
-			gMiscActiveItem = 0;
+			miscCurrentPage++;
+			if (miscCurrentPage >= numPages)
+				miscCurrentPage = 0;
+			miscActiveItem = 0;
 			waitTime = 150;
 		}
 		else if (bUp)
 		{
 			menuBeep();
-			if (gMiscActiveItem == 0)
-				gMiscActiveItem = itemsOnThisPage;
-			gMiscActiveItem--;
+			if (miscActiveItem == 0)
+				miscActiveItem = itemsOnThisPage;
+			miscActiveItem--;
 			waitTime = 150;
 		}
 		else if (bDown)
 		{
 			menuBeep();
-			gMiscActiveItem++;
-			if (gMiscActiveItem >= itemsOnThisPage)
-				gMiscActiveItem = 0;
+			miscActiveItem++;
+			if (miscActiveItem >= itemsOnThisPage)
+				miscActiveItem = 0;
 			waitTime = 150;
 		}
 	}
 }
-const int gMainLineCount = 7;
-int gMainActiveItem = 0;
-int gMainCurrentPage = 0;
-void processMainMenu()
+const int mainLineCount = 7;
+int mainActiveItem = 0;
+int mainCurrentPage = 0;
+static void processMainMenu()
 {
 	std::string caption = "Native Trainer";
 	DWORD waitTime = 150;
 	const int itemsPerPage = 10;
-	const int numPages = (gMainLineCount + itemsPerPage - 1) / itemsPerPage;
-	gMainActiveItem = 0;
+	const int numPages = (mainLineCount + itemsPerPage - 1) / itemsPerPage;
+	mainActiveItem = 0;
 	while (true)
 	{
 		int itemsOnThisPage = 0;
 		for (int i = 0; i < itemsPerPage; i++)
 		{
-			int itemIndex = gMainCurrentPage * itemsPerPage + i;
-			if (itemIndex < gMainLineCount)
+			int itemIndex = mainCurrentPage * itemsPerPage + i;
+			if (itemIndex < mainLineCount)
 				itemsOnThisPage++;
 		}
-		DWORD maxTickCount = GetTickCount() + waitTime;
+		DWORD maxTickCount = GetTickCount64() + waitTime;
 		do
 		{
-			drawMenuLine(caption, gMenuWidth, 15.0, 18.0, 0.0, 5.0, false, true);
+			drawMenuLine(caption, menuWidth, 36.0, 18.0, 0.0, 5.0, false, true);
 			for (int i = 0; i < itemsOnThisPage; i++)
 			{
-				int itemIndex = gMainCurrentPage * itemsPerPage + i;
-				drawMenuLine(gMainLineCaption[itemIndex], gMenuWidth, 9.0, gMenuTop + i * gMenuLineHeight, 0.0, 9.0, i == gMainActiveItem, false);
+				int itemIndex = mainCurrentPage * itemsPerPage + i;
+				drawMenuLine(mainLineCaption[itemIndex], menuWidth, menuLineHeight, menuTop + i * menuLineHeight, 0.0, 9.0, i == mainActiveItem, false);
 			}
-			drawMenuFooter(numPages, gMainCurrentPage);
+			drawMenuFooter(itemsOnThisPage, numPages, mainCurrentPage);
 			updateFeatures();
 			WAIT(0);
-		} while (GetTickCount() < maxTickCount);
+		} while (GetTickCount64() < maxTickCount);
 		waitTime = 0;
 		bool bSelect, bBack, bUp, bDown, bLeft, bRight;
 		getButtonState(&bSelect, &bBack, &bUp, &bDown, &bLeft, &bRight);
-		int selectedGlobalIndex = gMainCurrentPage * itemsPerPage + gMainActiveItem;
+		int selectedGlobalIndex = mainCurrentPage * itemsPerPage + mainActiveItem;
 		if (bSelect)
 		{
 			menuBeep();
@@ -2060,100 +2065,100 @@ void processMainMenu()
 		else if (bLeft)
 		{
 			menuBeep();
-			if (gMainCurrentPage == 0)
-				gMainCurrentPage = numPages;
-			gMainCurrentPage--;
-			gMainActiveItem = 0;
+			if (mainCurrentPage == 0)
+				mainCurrentPage = numPages;
+			mainCurrentPage--;
+			mainActiveItem = 0;
 			waitTime = 150;
 		}
 		else if (bRight)
 		{
 			menuBeep();
-			gMainCurrentPage++;
-			if (gMainCurrentPage >= numPages)
-				gMainCurrentPage = 0;
-			gMainActiveItem = 0;
+			mainCurrentPage++;
+			if (mainCurrentPage >= numPages)
+				mainCurrentPage = 0;
+			mainActiveItem = 0;
 			waitTime = 150;
 		}
 		else if (bUp)
 		{
 			menuBeep();
-			if (gMainActiveItem == 0)
-				gMainActiveItem = itemsOnThisPage;
-			gMainActiveItem--;
+			if (mainActiveItem == 0)
+				mainActiveItem = itemsOnThisPage;
+			mainActiveItem--;
 			waitTime = 150;
 		}
 		else if (bDown)
 		{
 			menuBeep();
-			gMainActiveItem++;
-			if (gMainActiveItem >= itemsOnThisPage)
-				gMainActiveItem = 0;
+			mainActiveItem++;
+			if (mainActiveItem >= itemsOnThisPage)
+				mainActiveItem = 0;
 			waitTime = 150;
 		}
 	}
 }
-void resetGlobals()
+static void resetGlobals()
 {
-	gMainActiveItem = 0;
-	gMainCurrentPage = 0;
-	gPlayerActiveItem = 0;
-	gPlayerCurrentPage = 0;
-	gSkinchangerCurrentPage = 0;
-	gSkinchangerActiveItem = 0;
-	gTeleportActiveItem = 0;
-	gTeleportCurrentPage = 0;
-	gWeaponActiveItem = 0;
-	gWeaponCurrentPage = 0;
-	gVehicleActiveItem = 0;
-	gVehicleCurrentPage = 0;
-	gCarspawnCurrentPage = 0;
-	gCarspawnActiveItem = 0;
-	gWorldActiveItem = 0;
-	gWorldCurrentPage = 0;
-	gWeatherActiveItem = 0;
-	gWeatherCurrentPage = 0;
-	gMiscActiveItem = 0;
-	gMiscCurrentPage = 0;
-	gFeaturePlayerInvincible = false;
-	gFeaturePlayerInvincibleUpdated = false;
-	gFeaturePlayerNeverWanted = false;
-	gFeaturePlayerIgnored = false;
-	gFeaturePlayerIgnoredUpdated = false;
-	gFeaturePlayerUnlimitedAbility = false;
-	gFeaturePlayerNoNoise = false;
-	gFeaturePlayerNoNoiseUpdated = false;
-	gFeaturePlayerFastSwim = false;
-	gFeaturePlayerFastSwimUpdated = false;
-	gFeaturePlayerFastRun = false;
-	gFeaturePlayerFastRunUpdated = false;
-	gFeaturePlayerSuperJump = false;
-	gFeatureWeaponNoReload = false;
-	gFeatureWeaponFireAmmo = false;
-	gFeatureWeaponExplosiveAmmo = false;
-	gFeatureWeaponExplosiveMelee = false;
-	gFeatureWeaponVehRockets = false;
-	gFeatureVehInvincible = false;
-	gFeatureVehInvincibleUpdated = false;
-	gFeatureVehInvincibleWheels = false;
-	gFeatureVehInvincibleWheelsUpdated = false;
-	gFeatureVehSeatbelt = false;
-	gFeatureVehSeatbeltUpdated = false;
-	gFeatureVehSpeedBoost = false;
-	gFeatureVehWrapInSpawned = false;
-	gFeatureWorldMoonGravity = false;
-	gFeatureTimePaused = false;
-	gFeatureTimePausedUpdated = false;
-	gFeatureTimeSynced = false;
-	gFeatureWeatherWind = false;
-	gFeatureWeatherPers = false;
-	gFeatureMiscLockRadio = false;
-	gFeatureMiscHideHud = false;
-	gFeatureWorldRandomCops = true;
-	gFeatureWorldRandomTrains = true;
-	gFeatureWorldRandomBoats = true;
-	gFeatureWorldGarbageTrucks = true;
-	gSkinchangerUsed = false;
+	mainActiveItem = 0;
+	mainCurrentPage = 0;
+	playerActiveItem = 0;
+	playerCurrentPage = 0;
+	skinchangerCurrentPage = 0;
+	skinchangerActiveItem = 0;
+	teleportActiveItem = 0;
+	teleportCurrentPage = 0;
+	weaponActiveItem = 0;
+	weaponCurrentPage = 0;
+	vehicleActiveItem = 0;
+	vehicleCurrentPage = 0;
+	carspawnCurrentPage = 0;
+	carspawnActiveItem = 0;
+	worldActiveItem = 0;
+	worldCurrentPage = 0;
+	weatherActiveItem = 0;
+	weatherCurrentPage = 0;
+	miscActiveItem = 0;
+	miscCurrentPage = 0;
+	featurePlayerInvincible = false;
+	featurePlayerInvincibleUpdated = false;
+	featurePlayerNeverWanted = false;
+	featurePlayerIgnored = false;
+	featurePlayerIgnoredUpdated = false;
+	featurePlayerUnlimitedAbility = false;
+	featurePlayerNoNoise = false;
+	featurePlayerNoNoiseUpdated = false;
+	featurePlayerFastSwim = false;
+	featurePlayerFastSwimUpdated = false;
+	featurePlayerFastRun = false;
+	featurePlayerFastRunUpdated = false;
+	featurePlayerSuperJump = false;
+	featureWeaponNoReload = false;
+	featureWeaponFireAmmo = false;
+	featureWeaponExplosiveAmmo = false;
+	featureWeaponExplosiveMelee = false;
+	featureWeaponVehRockets = false;
+	featureVehInvincible = false;
+	featureVehInvincibleUpdated = false;
+	featureVehInvincibleWheels = false;
+	featureVehInvincibleWheelsUpdated = false;
+	featureVehSeatbelt = false;
+	featureVehSeatbeltUpdated = false;
+	featureVehSpeedBoost = false;
+	featureVehWrapInSpawned = false;
+	featureWorldMoonGravity = false;
+	featureTimePaused = false;
+	featureTimePausedUpdated = false;
+	featureTimeSynced = false;
+	featureWeatherWind = false;
+	featureWeatherPers = false;
+	featureMiscLockRadio = false;
+	featureMiscHideHud = false;
+	featureWorldRandomCops = true;
+	featureWorldRandomTrains = true;
+	featureWorldRandomBoats = true;
+	featureWorldGarbageTrucks = true;
+	skinchangerUsed = false;
 }
 void main()
 {
@@ -2171,6 +2176,6 @@ void main()
 }
 void ScriptMain()
 {
-	srand(GetTickCount());
+	srand(GetTickCount64());
 	main();
 }
