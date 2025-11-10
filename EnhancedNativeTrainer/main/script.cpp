@@ -385,7 +385,6 @@ static void drawMenuLine(std::string caption, float lineWidth, float lineHeight,
 		rectCol[0] = 255;
 		rectCol[1] = 255;
 		rectCol[2] = 255;
-		rectCol[3] = 255;
 		textCol[0] = 0;
 		textCol[1] = 0;
 		textCol[2] = 0;
@@ -433,38 +432,54 @@ static void drawMenuLine(std::string caption, float lineWidth, float lineHeight,
 	float rightTextLeft = (lineLeftScaled + lineWidthScaled) - (5.0f / (float)screenW);
 	if (pState != NULL)
 	{
-		float boxSize = 10.0f;
-		float boxPadding = 15.0f;
-		float boxSizeScaledW = boxSize / (float)screenW;
-		float boxSizeScaledH = boxSize / (float)screenH;
-		float boxLeft = (lineLeftScaled + lineWidthScaled) - (boxPadding / (float)screenW) - boxSizeScaledW;
-		float boxTop = lineTopScaled + (lineHeightScaled * 0.5f) - (boxSizeScaledH * 0.5f);
-		int checkboxBGCol[4] = { 255, 255, 255, 255 };
-		if (active) {
-			checkboxBGCol[0] = 0;
-			checkboxBGCol[1] = 0;
-			checkboxBGCol[2] = 0;
-			checkboxBGCol[3] = 255;
-		}
-		drawRect(boxLeft, boxTop, boxSizeScaledW, boxSizeScaledH, checkboxBGCol[0], checkboxBGCol[1], checkboxBGCol[2], checkboxBGCol[3]);
+		LPCSTR statusText;
+		int statusColor[4]{};
 		if (*pState)
 		{
-			float innerBoxSize = boxSize * 0.6f;
-			float innerBoxPadding = boxSize * 0.2f;
-			float innerBoxSizeScaledW = innerBoxSize / (float)screenW;
-			float innerBoxSizeScaledH = innerBoxSize / (float)screenH;
-			float innerBoxLeft = boxLeft + (innerBoxPadding / (float)screenW);
-			float innerBoxTop = boxTop + (innerBoxPadding / (float)screenH);
-			int innerBoxCol[4] = { 255, 255, 255, 255 };
-			if (!active)
+			statusText = "ON";
+			if (active)
 			{
-				innerBoxCol[0] = 0;
-				innerBoxCol[1] = 0;
-				innerBoxCol[2] = 0;
-				innerBoxCol[3] = 255;
+				statusColor[0] = 0;
+				statusColor[1] = 255;
+				statusColor[2] = 0;
+				statusColor[3] = 255;
 			}
-			drawRect(innerBoxLeft, innerBoxTop, innerBoxSizeScaledW, innerBoxSizeScaledH, innerBoxCol[0], innerBoxCol[1], innerBoxCol[2], innerBoxCol[3]);
+			else
+			{
+				statusColor[0] = 144;
+				statusColor[1] = 255;
+				statusColor[2] = 144;
+				statusColor[3] = 255;
+			}
 		}
+		else
+		{
+			statusText = "OFF";
+			if (active)
+			{
+				statusColor[0] = 255;
+				statusColor[1] = 0;
+				statusColor[2] = 0;
+				statusColor[3] = 255;
+			}
+			else
+			{
+				statusColor[0] = 255;
+				statusColor[1] = 144;
+				statusColor[2] = 144;
+				statusColor[3] = 255;
+			}
+		}
+		UI::SET_TEXT_FONT(font);
+		UI::SET_TEXT_SCALE(0.0, textScale);
+		UI::SET_TEXT_COLOUR(statusColor[0], statusColor[1], statusColor[2], statusColor[3]);
+		UI::SET_TEXT_RIGHT_JUSTIFY(TRUE);
+		UI::SET_TEXT_WRAP(0.0f, rightTextLeft);
+		UI::SET_TEXT_DROPSHADOW(0, 0, 0, 0, 0);
+		UI::SET_TEXT_EDGE(0, 0, 0, 0, 0);
+		UI::_SET_TEXT_ENTRY("STRING");
+		UI::_ADD_TEXT_COMPONENT_STRING((LPSTR)statusText);
+		UI::_DRAW_TEXT(rightTextLeft, textTopScaled);
 	}
 	else if (!stepperValue.empty())
 	{
@@ -593,7 +608,7 @@ static void updateVehicleGuns()
 	if (!ENTITY::DOES_ENTITY_EXIST(playerPed) || !featureWeaponVehRockets)
 		return;
 	bool bSelect = IsKeyDown(0x6B);
-	if (bSelect && featureWeaponVehShootLastTime + 150 < GetTickCount64() &&
+	if (bSelect && static_cast<unsigned long long>(featureWeaponVehShootLastTime) + 150 < GetTickCount64() &&
 		PLAYER::IS_PLAYER_CONTROL_ON(player) && PED::IS_PED_IN_ANY_VEHICLE(playerPed, 0))
 	{
 		Vehicle veh = PED::GET_VEHICLE_PED_IS_USING(playerPed);
@@ -819,6 +834,7 @@ int skinchangerCurrentPage = 0;
 int skinchangerActiveItem = 0;
 static bool processSkinchangerMenu()
 {
+	std::string baseCaption = "Skin Changer";
 	DWORD waitTime = 150;
 	const int itemsPerPage = 10;
 	const int numPages = 67;
@@ -834,8 +850,11 @@ static bool processSkinchangerMenu()
 		DWORD maxTickCount = GetTickCount64() + waitTime;
 		do
 		{
-			char caption[32];
-			sprintf_s(caption, "Skin Changer %d / %d", skinchangerCurrentPage + 1, numPages);
+			std::string caption = baseCaption;
+			if (numPages > 1)
+			{
+				caption += " " + std::to_string(skinchangerCurrentPage + 1) + " / " + std::to_string(numPages);
+			}
 			drawMenuLine(caption, menuWidth, 36.0, 18.0, 0.0, 5.0, false, true);
 			for (int i = 0; i < itemsOnThisPage; i++)
 			{
@@ -925,7 +944,7 @@ int teleportActiveItem = 0;
 int teleportCurrentPage = 0;
 static bool processTeleportMenu()
 {
-	std::string caption = "Teleport";
+	std::string baseCaption = "Teleport";
 	DWORD waitTime = 150;
 	const int itemsPerPage = 10;
 	const int numPages = (teleportLineCount + itemsPerPage - 1) / itemsPerPage;
@@ -942,6 +961,11 @@ static bool processTeleportMenu()
 		DWORD maxTickCount = GetTickCount64() + waitTime;
 		do
 		{
+			std::string caption = baseCaption;
+			if (numPages > 1)
+			{
+				caption += " " + std::to_string(teleportCurrentPage + 1) + " / " + std::to_string(numPages);
+			}
 			drawMenuLine(caption, menuWidth, 36.0, 18.0, 0.0, 5.0, false, true);
 			for (int i = 0; i < itemsOnThisPage; i++)
 			{
@@ -1069,7 +1093,7 @@ int playerActiveItem = 0;
 int playerCurrentPage = 0;
 static void processPlayerMenu()
 {
-	std::string caption = "Player";
+	std::string baseCaption = "Player";
 	DWORD waitTime = 150;
 	const int itemsPerPage = 10;
 	const int numPages = (playerLineCount + itemsPerPage - 1) / itemsPerPage;
@@ -1086,6 +1110,11 @@ static void processPlayerMenu()
 		DWORD maxTickCount = GetTickCount64() + waitTime;
 		do
 		{
+			std::string caption = baseCaption;
+			if (numPages > 1)
+			{
+				caption += " " + std::to_string(playerCurrentPage + 1) + " / " + std::to_string(numPages);
+			}
 			drawMenuLine(caption, menuWidth, 36.0, 18.0, 0.0, 5.0, false, true);
 			for (int i = 0; i < itemsOnThisPage; i++)
 			{
@@ -1241,7 +1270,7 @@ int weaponActiveItem = 0;
 int weaponCurrentPage = 0;
 static void processWeaponMenu()
 {
-	std::string caption = "Weapon";
+	std::string baseCaption = "Weapon";
 	DWORD waitTime = 150;
 	const int itemsPerPage = 10;
 	const int numPages = (weaponLineCount + itemsPerPage - 1) / itemsPerPage;
@@ -1258,6 +1287,11 @@ static void processWeaponMenu()
 		DWORD maxTickCount = GetTickCount64() + waitTime;
 		do
 		{
+			std::string caption = baseCaption;
+			if (numPages > 1)
+			{
+				caption += " " + std::to_string(weaponCurrentPage + 1) + " / " + std::to_string(numPages);
+			}
 			drawMenuLine(caption, menuWidth, 36.0, 18.0, 0.0, 5.0, false, true);
 			for (int i = 0; i < itemsOnThisPage; i++)
 			{
@@ -1336,6 +1370,7 @@ int carspawnCurrentPage = 0;
 int carspawnActiveItem = 0;
 static bool processCarspawnMenu()
 {
+	std::string baseCaption = "Car Spawner";
 	DWORD waitTime = 150;
 	const int itemsPerPage = 10;
 	const int numPages = 40;
@@ -1351,8 +1386,11 @@ static bool processCarspawnMenu()
 		DWORD maxTickCount = GetTickCount64() + waitTime;
 		do
 		{
-			char caption[32];
-			sprintf_s(caption, "Car Spawner %d / %d", carspawnCurrentPage + 1, numPages);
+			std::string caption = baseCaption;
+			if (numPages > 1)
+			{
+				caption += " " + std::to_string(skinchangerCurrentPage + 1) + " / " + std::to_string(numPages);
+			}
 			drawMenuLine(caption, menuWidth, 36.0, 18.0, 0.0, 5.0, false, true);
 			for (int i = 0; i < itemsOnThisPage; i++)
 			{
@@ -1440,7 +1478,7 @@ int vehicleActiveItem = 0;
 int vehicleCurrentPage = 0;
 static void processVehMenu()
 {
-	std::string caption = "Vehicle";
+	std::string baseCaption = "Vehicle";
 	DWORD waitTime = 150;
 	const int itemsPerPage = 10;
 	const int numPages = (vehicleLineCount + itemsPerPage - 1) / itemsPerPage;
@@ -1457,6 +1495,11 @@ static void processVehMenu()
 		DWORD maxTickCount = GetTickCount64() + waitTime;
 		do
 		{
+			std::string caption = baseCaption;
+			if (numPages > 1)
+			{
+				caption += " " + std::to_string(vehicleCurrentPage + 1) + " / " + std::to_string(numPages);
+			}
 			drawMenuLine(caption, menuWidth, 36.0, 18.0, 0.0, 5.0, false, true);
 			for (int i = 0; i < itemsOnThisPage; i++)
 			{
@@ -1559,7 +1602,7 @@ int worldActiveItem = 0;
 int worldCurrentPage = 0;
 static void processWorldMenu()
 {
-	std::string caption = "World";
+	std::string baseCaption = "World";
 	DWORD waitTime = 150;
 	const int itemsPerPage = 10;
 	const int numPages = (worldLineCount + itemsPerPage - 1) / itemsPerPage;
@@ -1576,6 +1619,11 @@ static void processWorldMenu()
 		DWORD maxTickCount = GetTickCount64() + waitTime;
 		do
 		{
+			std::string caption = baseCaption;
+			if (numPages > 1)
+			{
+				caption += " " + std::to_string(worldCurrentPage + 1) + " / " + std::to_string(numPages);
+			}
 			drawMenuLine(caption, menuWidth, 36.0, 18.0, 0.0, 5.0, false, true);
 			for (int i = 0; i < itemsOnThisPage; i++)
 			{
@@ -1663,7 +1711,7 @@ int timeActiveItem = 0;
 int timeCurrentPage = 0;
 static void processTimeMenu()
 {
-	std::string caption = "Time";
+	std::string baseCaption = "Time";
 	DWORD waitTime = 150;
 	const int itemsPerPage = 10;
 	const int numPages = (timeLineCount + itemsPerPage - 1) / itemsPerPage;
@@ -1680,6 +1728,11 @@ static void processTimeMenu()
 		DWORD maxTickCount = GetTickCount64() + waitTime;
 		do
 		{
+			std::string caption = baseCaption;
+			if (numPages > 1)
+			{
+				caption += " " + std::to_string(timeCurrentPage + 1) + " / " + std::to_string(numPages);
+			}
 			drawMenuLine(caption, menuWidth, 36.0, 18.0, 0.0, 5.0, false, true);
 			for (int i = 0; i < itemsOnThisPage; i++)
 			{
@@ -1788,7 +1841,7 @@ int weatherActiveItem = 0;
 int weatherCurrentPage = 0;
 static void processWeatherMenu()
 {
-	std::string caption = "Weather";
+	std::string baseCaption = "Weather";
 	DWORD waitTime = 150;
 	const int itemsPerPage = 10;
 	const int numPages = (weatherLineCount + itemsPerPage - 1) / itemsPerPage;
@@ -1805,6 +1858,11 @@ static void processWeatherMenu()
 		DWORD maxTickCount = GetTickCount64() + waitTime;
 		do
 		{
+			std::string caption = baseCaption;
+			if (numPages > 1)
+			{
+				caption += " " + std::to_string(weatherCurrentPage + 1) + " / " + std::to_string(numPages);
+			}
 			drawMenuLine(caption, menuWidth, 36.0, 18.0, 0.0, 5.0, false, true);
 			for (int i = 0; i < itemsOnThisPage; i++)
 			{
@@ -1902,7 +1960,7 @@ int miscActiveItem = 0;
 int miscCurrentPage = 0;
 static void processMiscMenu()
 {
-	std::string caption = "Misc";
+	std::string baseCaption = "Misc";
 	DWORD waitTime = 150;
 	const int itemsPerPage = 10;
 	const int numPages = (miscLineCount + itemsPerPage - 1) / itemsPerPage;
@@ -1919,6 +1977,11 @@ static void processMiscMenu()
 		DWORD maxTickCount = GetTickCount64() + waitTime;
 		do
 		{
+			std::string caption = baseCaption;
+			if (numPages > 1)
+			{
+				caption += " " + std::to_string(miscCurrentPage + 1) + " / " + std::to_string(numPages);
+			}
 			drawMenuLine(caption, menuWidth, 36.0, 18.0, 0.0, 5.0, false, true);
 			for (int i = 0; i < itemsOnThisPage; i++)
 			{
@@ -1997,7 +2060,7 @@ int mainActiveItem = 0;
 int mainCurrentPage = 0;
 static void processMainMenu()
 {
-	std::string caption = "Native Trainer";
+	std::string baseCaption = "VAK";
 	DWORD waitTime = 150;
 	const int itemsPerPage = 10;
 	const int numPages = (mainLineCount + itemsPerPage - 1) / itemsPerPage;
@@ -2014,6 +2077,11 @@ static void processMainMenu()
 		DWORD maxTickCount = GetTickCount64() + waitTime;
 		do
 		{
+			std::string caption = baseCaption;
+			if (numPages > 1)
+			{
+				caption += " " + std::to_string(mainCurrentPage + 1) + " / " + std::to_string(numPages);
+			}
 			drawMenuLine(caption, menuWidth, 36.0, 18.0, 0.0, 5.0, false, true);
 			for (int i = 0; i < itemsOnThisPage; i++)
 			{
