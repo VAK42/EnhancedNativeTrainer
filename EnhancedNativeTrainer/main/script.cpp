@@ -1756,18 +1756,24 @@ static void processTimeMenu()
 		bool bSelect, bBack, bUp, bDown, bLeft, bRight;
 		getButtonState(&bSelect, &bBack, &bUp, &bDown, &bLeft, &bRight);
 		int selectedGlobalIndex = timeCurrentPage * itemsPerPage + timeActiveItem;
-		if (bSelect)
-		{
+		if (bSelect) {
 			menuBeep();
-			switch (selectedGlobalIndex)
-			{
+			switch (selectedGlobalIndex) {
 			case 0:
 				break;
-			default:
-				if (timeLines[selectedGlobalIndex].pState)
-					*timeLines[selectedGlobalIndex].pState = !(*timeLines[selectedGlobalIndex].pState);
-				if (timeLines[selectedGlobalIndex].pUpdated)
-					*timeLines[selectedGlobalIndex].pUpdated = true;
+			case 1:
+				featureTimePaused = !featureTimePaused;
+				featureTimePausedUpdated = true;
+				if (featureTimePaused)
+					featureTimeSynced = false;
+				break;
+			case 2:
+				featureTimeSynced = !featureTimeSynced;
+				if (featureTimeSynced) {
+					featureTimePaused = false;
+					featureTimePausedUpdated = true;
+				}
+				break;
 			}
 			waitTime = 200;
 		}
