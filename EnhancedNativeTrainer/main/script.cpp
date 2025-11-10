@@ -1,5 +1,8 @@
 #include "script.h"
 #include "keyboard.h"
+#include <windows.h>
+#include <ShlObj.h>
+#include <sstream>
 #include <string>
 #include <ctime>
 #pragma warning(disable : 4244 4305)
@@ -40,9 +43,109 @@ bool featureTimePausedUpdated = false;
 bool featureTimeSynced = false;
 bool featureWeatherWind = false;
 bool featureWeatherPers = false;
-bool featureMiscLockRadio = false;
 bool featureMiscHideHud = false;
 DWORD featureWeaponVehShootLastTime = 0;
+std::string iniPath;
+static void InitializeIniPath()
+{
+	char path[MAX_PATH];
+	if (SUCCEEDED(SHGetFolderPathA(NULL, CSIDL_APPDATA, NULL, 0, path)))
+	{
+		iniPath = std::string(path) + "\\EnhancedNativeTrainer.ini";
+	}
+	else
+	{
+		iniPath = ".\\EnhancedNativeTrainer.ini";
+	}
+}
+static void WriteIniBool(LPCSTR section, LPCSTR key, bool value)
+{
+	if (iniPath.empty()) return;
+	LPCSTR boolStr = value ? "true" : "false";
+	WritePrivateProfileStringA(section, key, boolStr, iniPath.c_str());
+}
+static bool ReadIniBool(LPCSTR section, LPCSTR key, bool defaultValue)
+{
+	if (iniPath.empty()) return defaultValue;
+	char result[256];
+	GetPrivateProfileStringA(section, key, defaultValue ? "true" : "false", result, 256, iniPath.c_str());
+	return (_stricmp(result, "true") == 0);
+}
+static void saveSettings()
+{
+	if (iniPath.empty()) return;
+	WriteIniBool("Player", "Invincible", featurePlayerInvincible);
+	WriteIniBool("Player", "NeverWanted", featurePlayerNeverWanted);
+	WriteIniBool("Player", "PoliceIgnored", featurePlayerIgnored);
+	WriteIniBool("Player", "UnlimitedAbility", featurePlayerUnlimitedAbility);
+	WriteIniBool("Player", "Noiseless", featurePlayerNoNoise);
+	WriteIniBool("Player", "FastSwim", featurePlayerFastSwim);
+	WriteIniBool("Player", "FastRun", featurePlayerFastRun);
+	WriteIniBool("Player", "SuperJump", featurePlayerSuperJump);
+	WriteIniBool("Weapon", "NoReload", featureWeaponNoReload);
+	WriteIniBool("Weapon", "FireAmmo", featureWeaponFireAmmo);
+	WriteIniBool("Weapon", "ExplosiveAmmo", featureWeaponExplosiveAmmo);
+	WriteIniBool("Weapon", "ExplosiveMelee", featureWeaponExplosiveMelee);
+	WriteIniBool("Weapon", "VehicleRockets", featureWeaponVehRockets);
+	WriteIniBool("Vehicle", "Invincible", featureVehInvincible);
+	WriteIniBool("Vehicle", "StrongWheels", featureVehInvincibleWheels);
+	WriteIniBool("Vehicle", "Seatbelt", featureVehSeatbelt);
+	WriteIniBool("Vehicle", "SpeedBoost", featureVehSpeedBoost);
+	WriteIniBool("Vehicle", "WrapInSpawned", featureVehWrapInSpawned);
+	WriteIniBool("World", "MoonGravity", featureWorldMoonGravity);
+	WriteIniBool("World", "RandomCops", featureWorldRandomCops);
+	WriteIniBool("World", "RandomTrains", featureWorldRandomTrains);
+	WriteIniBool("World", "RandomBoats", featureWorldRandomBoats);
+	WriteIniBool("World", "GarbageTrucks", featureWorldGarbageTrucks);
+	WriteIniBool("Time", "ClockPaused", featureTimePaused);
+	WriteIniBool("Time", "SyncWithSystem", featureTimeSynced);
+	WriteIniBool("Misc", "HideHud", featureMiscHideHud);
+}
+static void loadSettings()
+{
+	if (iniPath.empty()) return;
+	featurePlayerInvincible = ReadIniBool("Player", "Invincible", featurePlayerInvincible);
+	featurePlayerNeverWanted = ReadIniBool("Player", "NeverWanted", featurePlayerNeverWanted);
+	featurePlayerIgnored = ReadIniBool("Player", "PoliceIgnored", featurePlayerIgnored);
+	featurePlayerUnlimitedAbility = ReadIniBool("Player", "UnlimitedAbility", featurePlayerUnlimitedAbility);
+	featurePlayerNoNoise = ReadIniBool("Player", "Noiseless", featurePlayerNoNoise);
+	featurePlayerFastSwim = ReadIniBool("Player", "FastSwim", featurePlayerFastSwim);
+	featurePlayerFastRun = ReadIniBool("Player", "FastRun", featurePlayerFastRun);
+	featurePlayerSuperJump = ReadIniBool("Player", "SuperJump", featurePlayerSuperJump);
+	featureWeaponNoReload = ReadIniBool("Weapon", "NoReload", featureWeaponNoReload);
+	featureWeaponFireAmmo = ReadIniBool("Weapon", "FireAmmo", featureWeaponFireAmmo);
+	featureWeaponExplosiveAmmo = ReadIniBool("Weapon", "ExplosiveAmmo", featureWeaponExplosiveAmmo);
+	featureWeaponExplosiveMelee = ReadIniBool("Weapon", "ExplosiveMelee", featureWeaponExplosiveMelee);
+	featureWeaponVehRockets = ReadIniBool("Weapon", "VehicleRockets", featureWeaponVehRockets);
+	featureVehInvincible = ReadIniBool("Vehicle", "Invincible", featureVehInvincible);
+	featureVehInvincibleWheels = ReadIniBool("Vehicle", "StrongWheels", featureVehInvincibleWheels);
+	featureVehSeatbelt = ReadIniBool("Vehicle", "Seatbelt", featureVehSeatbelt);
+	featureVehSpeedBoost = ReadIniBool("Vehicle", "SpeedBoost", featureVehSpeedBoost);
+	featureVehWrapInSpawned = ReadIniBool("Vehicle", "WrapInSpawned", featureVehWrapInSpawned);
+	featureWorldMoonGravity = ReadIniBool("World", "MoonGravity", featureWorldMoonGravity);
+	featureWorldRandomCops = ReadIniBool("World", "RandomCops", featureWorldRandomCops);
+	featureWorldRandomTrains = ReadIniBool("World", "RandomTrains", featureWorldRandomTrains);
+	featureWorldRandomBoats = ReadIniBool("World", "RandomBoats", featureWorldRandomBoats);
+	featureWorldGarbageTrucks = ReadIniBool("World", "GarbageTrucks", featureWorldGarbageTrucks);
+	featureTimePaused = ReadIniBool("Time", "ClockPaused", featureTimePaused);
+	featureTimeSynced = ReadIniBool("Time", "SyncWithSystem", featureTimeSynced);
+	featureMiscHideHud = ReadIniBool("Misc", "HideHud", featureMiscHideHud);
+	featurePlayerInvincibleUpdated = true;
+	featurePlayerIgnoredUpdated = true;
+	featurePlayerNoNoiseUpdated = true;
+	featurePlayerFastSwimUpdated = true;
+	featurePlayerFastRunUpdated = true;
+	featureVehInvincibleUpdated = true;
+	featureVehInvincibleWheelsUpdated = true;
+	featureVehSeatbeltUpdated = true;
+	featureTimePausedUpdated = true;
+	GAMEPLAY::SET_GRAVITY_LEVEL(featureWorldMoonGravity ? 2 : 0);
+	PED::SET_CREATE_RANDOM_COPS(featureWorldRandomCops);
+	VEHICLE::SET_RANDOM_TRAINS(featureWorldRandomTrains);
+	VEHICLE::SET_RANDOM_BOATS(featureWorldRandomBoats);
+	VEHICLE::SET_GARBAGE_TRUCKS(featureWorldGarbageTrucks);
+}
+static void resetGlobals();
 LPCSTR pedModels[70][10] = {
 		{"player_zero", "player_one", "player_two", "a_c_boar", "a_c_chimp", "a_c_cow", "a_c_coyote", "a_c_deer", "a_c_fish", "a_c_hen"},
 		{"a_c_cat_01", "a_c_chickenhawk", "a_c_cormorant", "a_c_crow", "a_c_dolphin", "a_c_humpback", "a_c_killerwhale", "a_c_pigeon", "a_c_seagull", "a_c_sharkhammer"},
@@ -365,9 +468,10 @@ struct MiscLine
 	bool* pState;
 	bool* pUpdated;
 };
-extern MiscLine miscLines[2] = {
-		{"Next Radio Track", NULL, NULL},
-		{"Hide Hud", &featureMiscHideHud, NULL} };
+extern MiscLine miscLines[3] = {
+				{"Next Radio Track", NULL, NULL},
+				{"Hide Hud", &featureMiscHideHud, NULL},
+				{"Reset All", NULL, NULL} };
 LPCSTR mainLineCaption[7] = { "Player", "Weapon", "Vehicle", "World", "Time", "Weather", "Misc" };
 static void drawRect(float a0, float a1, float a2, float a3, int a4, int a5, int a6, int a7)
 {
@@ -1190,6 +1294,7 @@ static void processPlayerMenu()
 					*playerLines[selectedGlobalIndex].pState = !(*playerLines[selectedGlobalIndex].pState);
 				if (playerLines[selectedGlobalIndex].pUpdated)
 					*playerLines[selectedGlobalIndex].pUpdated = true;
+				saveSettings();
 			}
 			waitTime = 200;
 		}
@@ -1322,6 +1427,7 @@ static void processWeaponMenu()
 					*weaponLines[selectedGlobalIndex].pState = !(*weaponLines[selectedGlobalIndex].pState);
 				if (weaponLines[selectedGlobalIndex].pUpdated)
 					*weaponLines[selectedGlobalIndex].pUpdated = true;
+				saveSettings();
 			}
 			waitTime = 200;
 		}
@@ -1389,7 +1495,7 @@ static bool processCarspawnMenu()
 			std::string caption = baseCaption;
 			if (numPages > 1)
 			{
-				caption += " " + std::to_string(skinchangerCurrentPage + 1) + " / " + std::to_string(numPages);
+				caption += " " + std::to_string(carspawnCurrentPage + 1) + " / " + std::to_string(numPages);
 			}
 			drawMenuLine(caption, menuWidth, 36.0, 18.0, 0.0, 5.0, false, true);
 			for (int i = 0; i < itemsOnThisPage; i++)
@@ -1553,6 +1659,7 @@ static void processVehMenu()
 					*vehicleLines[selectedGlobalIndex].pState = !(*vehicleLines[selectedGlobalIndex].pState);
 				if (vehicleLines[selectedGlobalIndex].pUpdated)
 					*vehicleLines[selectedGlobalIndex].pUpdated = true;
+				saveSettings();
 			}
 			waitTime = 200;
 		}
@@ -1663,6 +1770,7 @@ static void processWorldMenu()
 				VEHICLE::SET_GARBAGE_TRUCKS(featureWorldGarbageTrucks);
 				break;
 			}
+			saveSettings();
 			waitTime = 200;
 		}
 		else if (bBack || isTrainerSwitchPressed())
@@ -1775,6 +1883,7 @@ static void processTimeMenu()
 				}
 				break;
 			}
+			saveSettings();
 			waitTime = 200;
 		}
 		else if (bBack || isTrainerSwitchPressed())
@@ -1961,7 +2070,7 @@ static void processWeatherMenu()
 		}
 	}
 }
-const int miscLineCount = 2;
+const int miscLineCount = 3;
 int miscActiveItem = 0;
 int miscCurrentPage = 0;
 static void processMiscMenu()
@@ -2012,11 +2121,20 @@ static void processMiscMenu()
 					PED::IS_PED_IN_ANY_VEHICLE(PLAYER::PLAYER_PED_ID(), 0))
 					AUDIO::SKIP_RADIO_FORWARD();
 				break;
-			default:
+			case 1:
 				if (miscLines[selectedGlobalIndex].pState)
 					*miscLines[selectedGlobalIndex].pState = !(*miscLines[selectedGlobalIndex].pState);
 				if (miscLines[selectedGlobalIndex].pUpdated)
 					*miscLines[selectedGlobalIndex].pUpdated = true;
+				saveSettings();
+				break;
+			case 2:
+				resetGlobals();
+				saveSettings();
+				setStatusText("All Settings Reset!");
+				break;
+			default:
+				break;
 			}
 			waitTime = 200;
 		}
@@ -2226,7 +2344,6 @@ static void resetGlobals()
 	featureTimeSynced = false;
 	featureWeatherWind = false;
 	featureWeatherPers = false;
-	featureMiscLockRadio = false;
 	featureMiscHideHud = false;
 	featureWorldRandomCops = true;
 	featureWorldRandomTrains = true;
@@ -2236,7 +2353,9 @@ static void resetGlobals()
 }
 void main()
 {
+	InitializeIniPath();
 	resetGlobals();
+	loadSettings();
 	while (true)
 	{
 		if (isTrainerSwitchPressed())
