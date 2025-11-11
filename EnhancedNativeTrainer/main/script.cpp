@@ -377,8 +377,9 @@ struct PlayerLine
 	bool* pState;
 	bool* pUpdated;
 };
-extern PlayerLine playerLines[14] = {
+extern PlayerLine playerLines[15] = {
 		{"Skin Changer", NULL, NULL},
+		{"Ped Spawner", NULL, NULL},
 		{"Teleport", NULL, NULL},
 		{"Fix Player", NULL, NULL},
 		{"Reset Skin", NULL, NULL},
@@ -1250,7 +1251,120 @@ static bool processTeleportMenu()
 	}
 	return false;
 }
-const int playerLineCount = 14;
+int pedspawnCurrentPage = 0;
+int pedspawnActiveItem = 0;
+static bool processPedspawnMenu()
+{
+	std::string baseCaption = "Ped Spawner";
+	DWORD waitTime = 150;
+	const int itemsPerPage = 10;
+	const int numPages = 70;
+	while (true)
+	{
+		int itemsOnThisPage = 0;
+		for (int i = 0; i < itemsPerPage; i++)
+		{
+			if (strlen(pedModelNames[pedspawnCurrentPage][i]) > 0)
+				itemsOnThisPage++;
+		}
+		DWORD maxTickCount = GetTickCount64() + waitTime;
+		do
+		{
+			std::string caption = baseCaption;
+			if (numPages > 1)
+			{
+				caption += " " + std::to_string(pedspawnCurrentPage + 1) + " / " + std::to_string(numPages);
+			}
+			drawMenuLine(caption, menuWidth, 36.0, 18.0, 0.0, 5.0, false, true, true, NULL, "");
+			for (int i = 0; i < itemsOnThisPage; i++)
+			{
+				LPCSTR modelFriendlyName = pedModelNames[pedspawnCurrentPage][i];
+				drawMenuLine(modelFriendlyName, menuWidth, menuLineHeight, menuTop + i * menuLineHeight, 0.0, 9.0, i == pedspawnActiveItem, false, false, NULL, "");
+			}
+			drawMenuFooter(itemsOnThisPage, numPages, pedspawnCurrentPage);
+			updateFeatures();
+			WAIT(0);
+		} while (GetTickCount64() < maxTickCount);
+		waitTime = 0;
+		bool bSelect, bBack, bUp, bDown, bLeft, bRight;
+		getButtonState(&bSelect, &bBack, &bUp, &bDown, &bLeft, &bRight);
+		if (bSelect)
+		{
+			menuBeep();
+			LPCSTR modelName = pedModels[pedspawnCurrentPage][pedspawnActiveItem];
+			DWORD model = GAMEPLAY::GET_HASH_KEY((char*)modelName);
+			if (STREAMING::IS_MODEL_IN_CDIMAGE(model) && STREAMING::IS_MODEL_VALID(model))
+			{
+				STREAMING::REQUEST_MODEL(model);
+				while (!STREAMING::HAS_MODEL_LOADED(model))
+					WAIT(0);
+				Vector3 coords = ENTITY::GET_OFFSET_FROM_ENTITY_IN_WORLD_COORDS(PLAYER::PLAYER_PED_ID(), 0.0, 5.0, 0.0);
+				Ped ped = PED::CREATE_PED(4, model, coords.x, coords.y, coords.z, 0.0, false, true);
+				WAIT(0);
+				STREAMING::SET_MODEL_AS_NO_LONGER_NEEDED(model);
+				ENTITY::SET_PED_AS_NO_LONGER_NEEDED(&ped);
+				LPCSTR friendlyName = pedModelNames[pedspawnCurrentPage][pedspawnActiveItem];
+				std::string status = std::string(friendlyName);
+				for (size_t i = 0; i < status.length(); i++)
+				{
+					if (i == 0 || status[i - 1] == ' ')
+						status[i] = toupper(status[i]);
+					else
+						status[i] = tolower(status[i]);
+				}
+				status += " Spawned!";
+				setStatusText(status);
+				return true;
+			}
+			else
+			{
+				setStatusText("Model Not Valid Or Not Found!");
+				waitTime = 200;
+			}
+		}
+		else if (bBack)
+		{
+			menuBeep();
+			break;
+		}
+		else if (bRight)
+		{
+			menuBeep();
+			pedspawnCurrentPage++;
+			if (pedspawnCurrentPage >= numPages)
+				pedspawnCurrentPage = 0;
+			pedspawnActiveItem = 0;
+			waitTime = 150;
+		}
+		else if (bLeft)
+		{
+			menuBeep();
+			if (pedspawnCurrentPage == 0)
+				pedspawnCurrentPage = numPages;
+			pedspawnCurrentPage--;
+			pedspawnActiveItem = 0;
+			waitTime = 150;
+		}
+		else if (bUp)
+		{
+			menuBeep();
+			if (pedspawnActiveItem == 0)
+				pedspawnActiveItem = itemsOnThisPage;
+			pedspawnActiveItem--;
+			waitTime = 150;
+		}
+		else if (bDown)
+		{
+			menuBeep();
+			pedspawnActiveItem++;
+			if (pedspawnActiveItem >= itemsOnThisPage)
+				pedspawnActiveItem = 0;
+			waitTime = 150;
+		}
+	}
+	return false;
+}
+const int playerLineCount = 15;
 int playerActiveItem = 0;
 int playerCurrentPage = 0;
 static void processPlayerMenu()
@@ -1282,7 +1396,7 @@ static void processPlayerMenu()
 			{
 				int itemIndex = playerCurrentPage * itemsPerPage + i;
 				std::string stepperValue = "";
-				if (itemIndex == 5)
+				if (itemIndex == 6)
 				{
 					Player player = PLAYER::PLAYER_ID();
 					int wantedLevel = PLAYER::GET_PLAYER_WANTED_LEVEL(player);
@@ -1310,10 +1424,14 @@ static void processPlayerMenu()
 					return;
 				break;
 			case 1:
-				if (processTeleportMenu())
+				if (processPedspawnMenu())
 					return;
 				break;
 			case 2:
+				if (processTeleportMenu())
+					return;
+				break;
+			case 3:
 			{
 				ENTITY::SET_ENTITY_HEALTH(playerPed, ENTITY::GET_ENTITY_MAX_HEALTH(playerPed));
 				PED::ADD_ARMOUR_TO_PED(playerPed, PLAYER::GET_PLAYER_MAX_ARMOUR(player) - PED::GET_PED_ARMOUR(playerPed));
@@ -1326,13 +1444,13 @@ static void processPlayerMenu()
 				setStatusText("Player Fixed!");
 			}
 			break;
-			case 3:
+			case 4:
 			{
 				PED::SET_PED_DEFAULT_COMPONENT_VARIATION(playerPed);
 				setStatusText("Using Default Model Skin!");
 			}
 			break;
-			case 4:
+			case 5:
 				for (int i = 0; i < 3; i++)
 				{
 					char statNameFull[32];
@@ -1361,7 +1479,7 @@ static void processPlayerMenu()
 		}
 		else if (bLeft)
 		{
-			if (selectedGlobalIndex == 5)
+			if (selectedGlobalIndex == 6)
 			{
 				menuBeep();
 				Player player = PLAYER::PLAYER_ID();
@@ -1385,7 +1503,7 @@ static void processPlayerMenu()
 		}
 		else if (bRight)
 		{
-			if (selectedGlobalIndex == 5)
+			if (selectedGlobalIndex == 6)
 			{
 				menuBeep();
 				Player player = PLAYER::PLAYER_ID();
