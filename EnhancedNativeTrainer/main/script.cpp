@@ -38,12 +38,17 @@ bool featureWorldRandomCops = true;
 bool featureWorldRandomTrains = true;
 bool featureWorldRandomBoats = true;
 bool featureWorldGarbageTrucks = true;
+bool featureWorldNoPeds = false;
+bool featureWorldNoTraffic = false;
+bool featureWorldRestrictedZones = false;
+bool featureWorldBlackout = false;
 bool featureTimePaused = false;
 bool featureTimePausedUpdated = false;
 bool featureTimeSynced = false;
 bool featureWeatherWind = false;
 bool featureWeatherPers = false;
 bool featureMiscHideHud = false;
+bool featureMiscRadioOff = false;
 DWORD featureWeaponVehShootLastTime = 0;
 std::string iniPath;
 static void InitializeIniPath()
@@ -97,9 +102,15 @@ static void saveSettings()
 	WriteIniBool("World", "RandomTrains", featureWorldRandomTrains);
 	WriteIniBool("World", "RandomBoats", featureWorldRandomBoats);
 	WriteIniBool("World", "GarbageTrucks", featureWorldGarbageTrucks);
+	WriteIniBool("World", "NoPedestrians", featureWorldNoPeds);
+	WriteIniBool("World", "NoTraffic", featureWorldNoTraffic);
+	WriteIniBool("World", "RestrictedZones", featureWorldRestrictedZones);
+	WriteIniBool("World", "Blackout", featureWorldBlackout);
 	WriteIniBool("Time", "ClockPaused", featureTimePaused);
 	WriteIniBool("Time", "SyncWithSystem", featureTimeSynced);
+	WriteIniBool("Weather", "Wind", featureWeatherWind);
 	WriteIniBool("Misc", "HideHud", featureMiscHideHud);
+	WriteIniBool("Misc", "RadioOff", featureMiscRadioOff);
 }
 static void loadSettings()
 {
@@ -127,9 +138,15 @@ static void loadSettings()
 	featureWorldRandomTrains = ReadIniBool("World", "RandomTrains", featureWorldRandomTrains);
 	featureWorldRandomBoats = ReadIniBool("World", "RandomBoats", featureWorldRandomBoats);
 	featureWorldGarbageTrucks = ReadIniBool("World", "GarbageTrucks", featureWorldGarbageTrucks);
+	featureWorldNoPeds = ReadIniBool("World", "NoPedestrians", featureWorldNoPeds);
+	featureWorldNoTraffic = ReadIniBool("World", "NoTraffic", featureWorldNoTraffic);
+	featureWorldRestrictedZones = ReadIniBool("World", "RestrictedZones", featureWorldRestrictedZones);
+	featureWorldBlackout = ReadIniBool("World", "Blackout", featureWorldBlackout);
 	featureTimePaused = ReadIniBool("Time", "ClockPaused", featureTimePaused);
 	featureTimeSynced = ReadIniBool("Time", "SyncWithSystem", featureTimeSynced);
+	featureWeatherWind = ReadIniBool("Weather", "Wind", featureWeatherWind);
 	featureMiscHideHud = ReadIniBool("Misc", "HideHud", featureMiscHideHud);
+	featureMiscRadioOff = ReadIniBool("Misc", "RadioOff", featureMiscRadioOff);
 	featurePlayerInvincibleUpdated = true;
 	featurePlayerIgnoredUpdated = true;
 	featurePlayerNoNoiseUpdated = true;
@@ -423,12 +440,16 @@ struct WorldLine
 	bool* pState;
 	bool* pUpdated;
 };
-extern WorldLine worldLines[5] = {
+extern WorldLine worldLines[9] = {
 		{"Moon Gravity", &featureWorldMoonGravity, NULL},
 		{"Random Cops", &featureWorldRandomCops, NULL},
 		{"Random Trains", &featureWorldRandomTrains, NULL},
 		{"Random Boats", &featureWorldRandomBoats, NULL},
-		{"Garbage Trucks", &featureWorldGarbageTrucks, NULL} };
+		{"Garbage Trucks", &featureWorldGarbageTrucks, NULL},
+		{"No Pedestrians", &featureWorldNoPeds, NULL},
+		{"No Traffic", &featureWorldNoTraffic, NULL},
+		{"Restricted Zones", &featureWorldRestrictedZones, NULL},
+		{"Blackout", &featureWorldBlackout, NULL} };
 struct TimeLine
 {
 	LPCSTR text;
@@ -468,9 +489,10 @@ struct MiscLine
 	bool* pState;
 	bool* pUpdated;
 };
-extern MiscLine miscLines[3] = {
+extern MiscLine miscLines[4] = {
 				{"Next Radio Track", NULL, NULL},
 				{"Hide Hud", &featureMiscHideHud, NULL},
+				{"Radio Always Off", &featureMiscRadioOff, NULL},
 				{"Reset All", NULL, NULL} };
 LPCSTR mainLineCaption[7] = { "Player", "Weapon", "Vehicle", "World", "Time", "Weather", "Misc" };
 static void drawRect(float a0, float a1, float a2, float a3, int a4, int a5, int a6, int a7)
@@ -679,7 +701,6 @@ static void setStatusText(std::string str, DWORD time = 5000, bool isGxtEntry = 
 	statusTextDrawTicksMax = GetTickCount64() + time;
 	statusTextGxtEntry = isGxtEntry;
 }
-
 static void checkPlayerModel()
 {
 	Player player = PLAYER::PLAYER_ID();
@@ -688,9 +709,7 @@ static void checkPlayerModel()
 		return;
 	Hash model = ENTITY::GET_ENTITY_MODEL(playerPed);
 	if (ENTITY::IS_ENTITY_DEAD(playerPed) || PLAYER::IS_PLAYER_BEING_ARRESTED(player, TRUE))
-		if (model != GAMEPLAY::GET_HASH_KEY("player_zero") &&
-			model != GAMEPLAY::GET_HASH_KEY("player_one") &&
-			model != GAMEPLAY::GET_HASH_KEY("player_two"))
+		if (model != GAMEPLAY::GET_HASH_KEY("player_zero") && model != GAMEPLAY::GET_HASH_KEY("player_one") && model != GAMEPLAY::GET_HASH_KEY("player_two"))
 		{
 			setStatusText("Turning To Normal!");
 			WAIT(1000);
@@ -712,8 +731,7 @@ static void updateVehicleGuns()
 	if (!ENTITY::DOES_ENTITY_EXIST(playerPed) || !featureWeaponVehRockets)
 		return;
 	bool bSelect = IsKeyDown(0x6B);
-	if (bSelect && static_cast<unsigned long long>(featureWeaponVehShootLastTime) + 150 < GetTickCount64() &&
-		PLAYER::IS_PLAYER_CONTROL_ON(player) && PED::IS_PED_IN_ANY_VEHICLE(playerPed, 0))
+	if (bSelect && static_cast<unsigned long long>(featureWeaponVehShootLastTime) + 150 < GetTickCount64() && PLAYER::IS_PLAYER_CONTROL_ON(player) && PED::IS_PED_IN_ANY_VEHICLE(playerPed, 0))
 	{
 		Vehicle veh = PED::GET_VEHICLE_PED_IS_USING(playerPed);
 		Vector3 v0, v1;
@@ -919,6 +937,46 @@ static void updateFeatures()
 				VEHICLE::SET_VEHICLE_FORWARD_SPEED(veh, 0.0);
 		}
 	}
+	float pedDensity = featureWorldNoPeds ? 0.0f : 1.0f;
+	float vehDensity = featureWorldNoTraffic ? 0.0f : 1.0f;
+	PED::SET_PED_DENSITY_MULTIPLIER_THIS_FRAME(pedDensity);
+	VEHICLE::SET_RANDOM_VEHICLE_DENSITY_MULTIPLIER_THIS_FRAME(vehDensity);
+	VEHICLE::SET_PARKED_VEHICLE_DENSITY_MULTIPLIER_THIS_FRAME(vehDensity);
+	if (featureWorldRestrictedZones)
+	{
+		PED::SET_PED_NON_CREATION_AREA(-10000.0f, -10000.0f, -1000.0f, 10000.0f, 10000.0f, 1000.0f);
+		PATHFIND::DISABLE_NAVMESH_IN_AREA(-10000.0f, -10000.0f, -1000.0f, 10000.0f, 10000.0f, 1000.0f, 0);
+	}
+	else
+	{
+		PED::CLEAR_PED_NON_CREATION_AREA();
+	}
+	UNK::_GET_BROADCAST_FINSHED_LOS_SOUND(featureWorldBlackout);
+	GRAPHICS::_SET_BLACKOUT(featureWorldBlackout);
+	if (featureMiscRadioOff)
+	{
+		AUDIO::SET_MOBILE_PHONE_RADIO_STATE(FALSE);
+		if (PED::IS_PED_IN_ANY_VEHICLE(playerPed, 0))
+		{
+			Vehicle veh = PED::GET_VEHICLE_PED_IS_USING(playerPed);
+			if (ENTITY::DOES_ENTITY_EXIST(veh))
+			{
+				AUDIO::SET_VEHICLE_RADIO_ENABLED(veh, FALSE);
+			}
+		}
+	}
+	else
+	{
+		AUDIO::SET_MOBILE_PHONE_RADIO_STATE(TRUE);
+		if (PED::IS_PED_IN_ANY_VEHICLE(playerPed, 0))
+		{
+			Vehicle veh = PED::GET_VEHICLE_PED_IS_USING(playerPed);
+			if (ENTITY::DOES_ENTITY_EXIST(veh))
+			{
+				AUDIO::SET_VEHICLE_RADIO_ENABLED(veh, TRUE);
+			}
+		}
+	}
 	if (featureTimePausedUpdated)
 	{
 		TIME::PAUSE_CLOCK(featureTimePaused);
@@ -941,7 +999,7 @@ static bool processSkinchangerMenu()
 	std::string baseCaption = "Skin Changer";
 	DWORD waitTime = 150;
 	const int itemsPerPage = 10;
-	const int numPages = 67;
+	const int numPages = 70;
 	skinchangerActiveItem = 0;
 	while (true)
 	{
@@ -1286,8 +1344,6 @@ static void processPlayerMenu()
 					STATS::STAT_SET_INT(hash, val, 1);
 				}
 				setStatusText("Cash Added!");
-				break;
-			case 5:
 				break;
 			default:
 				if (playerLines[selectedGlobalIndex].pState)
@@ -1704,7 +1760,7 @@ static void processVehMenu()
 		}
 	}
 }
-const int worldLineCount = 5;
+const int worldLineCount = 9;
 int worldActiveItem = 0;
 int worldCurrentPage = 0;
 static void processWorldMenu()
@@ -1755,7 +1811,8 @@ static void processWorldMenu()
 				GAMEPLAY::SET_GRAVITY_LEVEL(featureWorldMoonGravity ? 2 : 0);
 				break;
 			case 1:
-				PED::SET_CREATE_RANDOM_COPS(!featureWorldRandomCops);
+				featureWorldRandomCops = !featureWorldRandomCops;
+				PED::SET_CREATE_RANDOM_COPS(featureWorldRandomCops);
 				break;
 			case 2:
 				featureWorldRandomTrains = !featureWorldRandomTrains;
@@ -1769,6 +1826,11 @@ static void processWorldMenu()
 				featureWorldGarbageTrucks = !featureWorldGarbageTrucks;
 				VEHICLE::SET_GARBAGE_TRUCKS(featureWorldGarbageTrucks);
 				break;
+			default:
+				if (worldLines[selectedGlobalIndex].pState)
+					*worldLines[selectedGlobalIndex].pState = !(*worldLines[selectedGlobalIndex].pState);
+				if (worldLines[selectedGlobalIndex].pUpdated)
+					*worldLines[selectedGlobalIndex].pUpdated = true;
 			}
 			saveSettings();
 			waitTime = 200;
@@ -2010,6 +2072,7 @@ static void processWeatherMenu()
 					GAMEPLAY::SET_WIND(0.0);
 					GAMEPLAY::SET_WIND_SPEED(0.0);
 				}
+				saveSettings();
 				break;
 			case 1:
 				featureWeatherPers = !featureWeatherPers;
@@ -2070,7 +2133,7 @@ static void processWeatherMenu()
 		}
 	}
 }
-const int miscLineCount = 3;
+const int miscLineCount = 4;
 int miscActiveItem = 0;
 int miscCurrentPage = 0;
 static void processMiscMenu()
@@ -2121,19 +2184,22 @@ static void processMiscMenu()
 					PED::IS_PED_IN_ANY_VEHICLE(PLAYER::PLAYER_PED_ID(), 0))
 					AUDIO::SKIP_RADIO_FORWARD();
 				break;
-			case 1:
+			case 2:
 				if (miscLines[selectedGlobalIndex].pState)
 					*miscLines[selectedGlobalIndex].pState = !(*miscLines[selectedGlobalIndex].pState);
-				if (miscLines[selectedGlobalIndex].pUpdated)
-					*miscLines[selectedGlobalIndex].pUpdated = true;
 				saveSettings();
 				break;
-			case 2:
+			case 3:
 				resetGlobals();
 				saveSettings();
 				setStatusText("All Settings Reset!");
 				break;
 			default:
+				if (miscLines[selectedGlobalIndex].pState)
+					*miscLines[selectedGlobalIndex].pState = !(*miscLines[selectedGlobalIndex].pState);
+				if (miscLines[selectedGlobalIndex].pUpdated)
+					*miscLines[selectedGlobalIndex].pUpdated = true;
+				saveSettings();
 				break;
 			}
 			waitTime = 200;
@@ -2345,11 +2411,21 @@ static void resetGlobals()
 	featureWeatherWind = false;
 	featureWeatherPers = false;
 	featureMiscHideHud = false;
+	featureMiscRadioOff = false;
 	featureWorldRandomCops = true;
 	featureWorldRandomTrains = true;
 	featureWorldRandomBoats = true;
 	featureWorldGarbageTrucks = true;
+	featureWorldNoPeds = false;
+	featureWorldNoTraffic = false;
+	featureWorldRestrictedZones = false;
+	featureWorldBlackout = false;
 	skinchangerUsed = false;
+	GAMEPLAY::SET_GRAVITY_LEVEL(featureWorldMoonGravity ? 2 : 0);
+	PED::SET_CREATE_RANDOM_COPS(featureWorldRandomCops);
+	VEHICLE::SET_RANDOM_TRAINS(featureWorldRandomTrains);
+	VEHICLE::SET_RANDOM_BOATS(featureWorldRandomBoats);
+	VEHICLE::SET_GARBAGE_TRUCKS(featureWorldGarbageTrucks);
 }
 void main()
 {
